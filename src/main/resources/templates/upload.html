@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validador de Documentos</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main class="card">
+    <h1>Enviar documento</h1>
+    <p class="subtitulo">Faça o upload do documento para iniciarmos a extração das informações.</p>
+
+    <!-- Só aparecem se o Controller mandar essas mensagens -->
+    <div th:if="${sucesso}" class="alerta sucesso" th:text="${sucesso}"></div>
+    <div th:if="${erro}" class="alerta erro" th:text="${erro}"></div>
+
+    <!-- enctype multipart/form-data é OBRIGATÓRIO para enviar arquivos -->
+    <form th:action="@{/documentos}" method="post" enctype="multipart/form-data">
+        <label for="tipo">Tipo de documento</label>
+        <select id="tipo" name="tipo" required>
+            <option value="COMPROVANTE_RESIDENCIA">Comprovante de residência</option>
+        </select>
+
+        <label for="arquivo">Arquivo (PDF, PNG ou JPG — máx. 10MB)</label>
+        <input type="file" id="arquivo" name="arquivo" accept=".pdf,.png,.jpg,.jpeg" required>
+
+        <button type="submit">Processar documento</button>
+    </form>
+</main>
+</body>
+</html>
