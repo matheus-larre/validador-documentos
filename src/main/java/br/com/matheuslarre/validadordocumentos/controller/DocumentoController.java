@@ -1,15 +1,43 @@
 package br.com.matheuslarre.validadordocumentos.controller;
 
+import br.com.matheuslarre.validadordocumentos.service.ArmazenamentoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@Controller // diz ao Spring: esta classe responde requisições e devolve páginas HTML
+import java.nio.file.Path;
+
+@Controller
 public class DocumentoController {
 
-    // Quando alguém acessa http://localhost:8080/ ...
+    private final ArmazenamentoService armazenamentoService;
+
+    // Injeção de dependência pelo construtor: o Spring entrega o Service pronto
+    public DocumentoController(ArmazenamentoService armazenamentoService) {
+        this.armazenamentoService = armazenamentoService;
+    }
+
     @GetMapping("/")
     public String telaUpload() {
-        // ... o Spring procura o arquivo templates/upload.html e mostra no navegador
         return "upload";
+    }
+
+    @PostMapping("/documentos")
+    public String receberDocumento(@RequestParam("tipo") String tipo,
+                                   @RequestParam("arquivo") MultipartFile arquivo,
+                                   RedirectAttributes redirect) {
+        try {
+            Path salvo = armazenamentoService.salvar(arquivo);
+            redirect.addFlashAttribute("sucesso",
+                    "Arquivo \"" + arquivo.getOriginalFilename() + "\" recebido como " + tipo
+                    + ". Salvo como " + salvo.getFileName() + ".");
+        } catch (IllegalArgumentException e) {
+            redirect.addFlashAttribute("erro", e.getMessage());
+        }
+        // Padrão PRG (Post/Redirect/Get): evita reenviar o arquivo ao apertar F5
+        return "redirect:/";
     }
 }

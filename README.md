@@ -52,8 +52,8 @@ Acesse: http://localhost:8080
 ## 5. Roadmap
 
 - [x] Definição do problema e escopo
-- [ ] Estrutura inicial do projeto (Spring Boot)
-- [ ] Tela e endpoint de upload
+- [x] Estrutura inicial do projeto (Spring Boot)
+- [x] Tela e endpoint de upload
 - [ ] OCR com Tesseract
 - [ ] Pré-processamento com OpenCV
 - [ ] Extração de dados com IA (Gemini)
