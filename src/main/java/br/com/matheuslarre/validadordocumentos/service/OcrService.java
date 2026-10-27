@@ -3,6 +3,10 @@ package br.com.matheuslarre.validadordocumentos.service;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +14,14 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class OcrService {
+
+    private static final int MAX_PAGINAS = 3;
+    private static final int DPI = 300;
 
     private final String tessdataPath;
     private final String idioma;
@@ -52,7 +60,7 @@ public class OcrService {
     private List<BufferedImage> carregarPaginas(Path arquivo) {
         String nome = arquivo.getFileName().toString().toLowerCase();
         if (nome.endsWith(".pdf")) {
-            throw new OcrException("Leitura de PDF ainda não implementada. Envie PNG ou JPG por enquanto.");
+            return renderizarPdf(arquivo);
         }
         try {
             BufferedImage imagem = ImageIO.read(arquivo.toFile());
@@ -62,6 +70,22 @@ public class OcrService {
             return List.of(imagem);
         } catch (IOException e) {
             throw new OcrException("Falha ao abrir a imagem enviada.", e);
+        }
+    }
+
+    // Transforma cada página do PDF em imagem (como uma "foto" da página) para o Tesseract ler
+    private List<BufferedImage> renderizarPdf(Path arquivo) {
+        try (PDDocument documento = Loader.loadPDF(arquivo.toFile())) {
+            PDFRenderer renderer = new PDFRenderer(documento);
+            int totalPaginas = Math.min(documento.getNumberOfPages(), MAX_PAGINAS);
+
+            List<BufferedImage> paginas = new ArrayList<>();
+            for (int i = 0; i < totalPaginas; i++) {
+                paginas.add(renderer.renderImageWithDPI(i, DPI, ImageType.GRAY));
+            }
+            return paginas;
+        } catch (IOException e) {
+            throw new OcrException("Não foi possível abrir o PDF enviado.", e);
         }
     }
 }

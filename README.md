@@ -43,7 +43,14 @@ Upload (PDF/imagem) → OpenCV (tratamento) → Tesseract (OCR) → Gemini (text
 
 ## 4. Como rodar
 
+**Pré-requisitos:** Java 17+ e o [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki) instalado com o idioma **Portuguese**.
+O caminho padrão dos idiomas é `C:/Program Files/Tesseract-OCR/tessdata`. Para usar outro, defina a variável de ambiente `TESSDATA_PATH`.
+
 ```bash
+# Windows (PowerShell)
+.\mvnw.cmd spring-boot:run
+
+# Linux / macOS
 ./mvnw spring-boot:run
 ```
 
@@ -54,7 +61,7 @@ Acesse: http://localhost:8080
 - [x] Definição do problema e escopo
 - [x] Estrutura inicial do projeto (Spring Boot)
 - [x] Tela e endpoint de upload
-- [ ] OCR com Tesseract
+- [x] OCR com Tesseract
 - [ ] Pré-processamento com OpenCV
 - [ ] Extração de dados com IA (Gemini)
 - [ ] Regras de validação + testes
