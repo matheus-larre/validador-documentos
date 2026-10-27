@@ -1,15 +1,133 @@
+/* ===== Paleta da identidade visual (tons pastel) ===== */
+:root {
+    --lilas: #C8B6FF;
+    --lavanda: #B8C0FF;
+    --azul-pastel: #BBD0FF;
+    --cinza-azulado: #DFE3EE;
+    --fundo: #F7F7F7;
+    --branco: #FFFFFF;
+    --texto: #2E2A47;        /* roxo bem escuro: garante leitura sobre os pastéis */
+    --texto-suave: #5F5A7A;
+    --sombra: rgba(120, 100, 200, 0.15);
+}
+
 * { box-sizing: border-box; }
-body { font-family: "Segoe UI", Arial, sans-serif; background: #f5f5f7; margin: 0;
-       min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
-.card { background: #fff; padding: 32px; border-radius: 12px; width: 100%; max-width: 520px;
-        box-shadow: 0 2px 12px rgba(0,0,0,.08); }
-h1 { margin: 0 0 4px; }
-.subtitulo { color: #666; margin: 0 0 24px; }
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: var(--texto);
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--azul-pastel) 0%, var(--fundo) 45%, var(--lilas) 100%);
+}
+
+/* ===== Card principal ===== */
+.card {
+    position: relative;
+    overflow: hidden;
+    background: var(--branco);
+    padding: 36px 32px 32px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 560px;
+    border: 1px solid var(--cinza-azulado);
+    box-shadow: 0 10px 30px var(--sombra);
+}
+
+/* Faixa degradê no topo do card */
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--lilas), var(--lavanda), var(--azul-pastel));
+}
+
+.marca {
+    display: inline-block;
+    margin: 0 0 12px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--fundo);
+    border: 1px solid var(--cinza-azulado);
+    color: var(--texto-suave);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .3px;
+}
+
+h1 { margin: 0 0 4px; color: var(--texto); }
+.subtitulo { color: var(--texto-suave); margin: 0 0 24px; }
+
+/* ===== Formulário ===== */
 label { display: block; font-weight: 600; margin: 16px 0 6px; }
-select, input[type=file] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
-button { margin-top: 24px; width: 100%; padding: 12px; border: 0; border-radius: 8px;
-         background: #ff5800; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; }
-button:hover { background: #e04e00; }
-.alerta { padding: 12px; border-radius: 8px; margin-bottom: 16px; }
-.sucesso { background: #e7f6ec; color: #1e7b3a; }
-.erro { background: #fdecea; color: #b3261e; }
+
+select, input[type=file] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--cinza-azulado);
+    border-radius: 10px;
+    background: var(--fundo);
+    color: var(--texto);
+    font-size: 14px;
+}
+
+select:focus, input[type=file]:focus {
+    outline: none;
+    border-color: var(--lavanda);
+    box-shadow: 0 0 0 3px rgba(184, 192, 255, 0.55);
+}
+
+/* Botão interno do campo de arquivo ("Escolher arquivo") */
+input[type=file]::file-selector-button {
+    border: 0;
+    background: var(--azul-pastel);
+    color: var(--texto);
+    padding: 6px 12px;
+    margin-right: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button {
+    margin-top: 24px;
+    width: 100%;
+    padding: 12px;
+    border: 0;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--lilas), var(--lavanda));
+    color: var(--texto);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .1s ease, box-shadow .2s ease;
+}
+
+button:hover { box-shadow: 0 6px 16px var(--sombra); transform: translateY(-1px); }
+button:active { transform: translateY(0); }
+
+/* ===== Mensagens (verde/vermelho suavizados: carregam significado) ===== */
+.alerta { padding: 12px 14px; border-radius: 10px; margin-bottom: 16px; border-left: 4px solid; }
+.sucesso { background: #E8F6EE; color: #1E6B3A; border-left-color: #8FD3A8; }
+.erro { background: #FDEDEF; color: #A12A3A; border-left-color: #F2A7B3; }
+
+/* ===== Resultado do OCR ===== */
+.resultado { margin-top: 28px; }
+.resultado h2 { font-size: 18px; margin: 0 0 8px; }
+.resultado pre {
+    white-space: pre-wrap;
+    background: var(--fundo);
+    border: 1px solid var(--cinza-azulado);
+    border-left: 4px solid var(--lilas);
+    padding: 12px;
+    border-radius: 10px;
+    max-height: 320px;
+    overflow: auto;
+    font-size: 13px;
+    color: var(--texto);
+}
