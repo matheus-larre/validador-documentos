@@ -27,6 +27,12 @@
 
         <button type="submit">Processar documento</button>
     </form>
+
+    <!-- Resultado do OCR: só aparece depois de um envio com sucesso -->
+    <section th:if="${textoExtraido}" class="resultado">
+        <h2>Texto extraído (OCR)</h2>
+        <pre th:text="${textoExtraido}"></pre>
+    </section>
 </main>
 </body>
 </html>
