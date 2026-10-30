@@ -71,6 +71,10 @@ Acesse: http://localhost:8080
 - [ ] Segundo tipo de documento (RG/CNH)
 - [ ] Deploy
 
+## Uso de IA no desenvolvimento
+
+Ferramentas de IA generativa foram usadas como apoio durante o desenvolvimento — para tirar dúvidas, revisar código e acelerar tarefas pontuais. As decisões de arquitetura, a implementação e a revisão final de tudo o que foi entregue são de minha autoria e responsabilidade.
+
 ## Autor
 
 Matheus Rodrigues Larré — [github.com/matheus-larre](https://github.com/matheus-larre)
