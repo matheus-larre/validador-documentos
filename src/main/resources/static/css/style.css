@@ -131,3 +131,17 @@ button:active { transform: translateY(0); }
     font-size: 13px;
     color: var(--texto);
 }
+
+/* ===== Tabela de dados extraídos pela IA ===== */
+.dados { width: 100%; border-collapse: collapse; font-size: 14px; }
+.dados th {
+    text-align: left;
+    width: 38%;
+    padding: 8px 10px;
+    color: var(--texto-suave);
+    font-weight: 600;
+    background: var(--fundo);
+    border-bottom: 1px solid var(--cinza-azulado);
+}
+.dados td { padding: 8px 10px; border-bottom: 1px solid var(--cinza-azulado); }
+.dados tr:first-child th { border-top-left-radius: 10px; }

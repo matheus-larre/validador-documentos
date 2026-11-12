@@ -29,6 +29,20 @@
         <button type="submit">Processar documento</button>
     </form>
 
+    <!-- Dados estruturados pela IA: só aparece quando a extração deu certo -->
+    <section th:if="${dados}" class="resultado">
+        <h2>Dados extraídos (IA)</h2>
+        <table class="dados">
+            <tr><th>Nome</th><td th:text="${dados.nome() ?: '—'}"></td></tr>
+            <tr><th>CPF</th><td th:text="${dados.cpf() ?: '—'}"></td></tr>
+            <tr><th>Endereço</th><td th:text="${dados.endereco() ?: '—'}"></td></tr>
+            <tr><th>CEP</th><td th:text="${dados.cep() ?: '—'}"></td></tr>
+            <tr><th>Cidade</th><td th:text="${dados.cidade() ?: '—'}"></td></tr>
+            <tr><th>Estado</th><td th:text="${dados.estado() ?: '—'}"></td></tr>
+            <tr><th>Data de emissão</th><td th:text="${dados.dataEmissao() ?: '—'}"></td></tr>
+        </table>
+    </section>
+
     <!-- Resultado do OCR: só aparece depois de um envio com sucesso -->
     <section th:if="${textoExtraido}" class="resultado">
         <h2>Texto extraído (OCR)</h2>

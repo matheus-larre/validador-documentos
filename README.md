@@ -46,6 +46,8 @@ Upload (PDF/imagem) → OpenCV (tratamento) → Tesseract (OCR) → Gemini (text
 **Pré-requisitos:** Java 17+ e o [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki) instalado com o idioma **Portuguese**.
 O caminho padrão dos idiomas é `C:/Program Files/Tesseract-OCR/tessdata`. Para usar outro, defina a variável de ambiente `TESSDATA_PATH`.
 
+**Chave da IA:** copie o `.env.example` para `.env` e preencha `GEMINI_API_KEY` com uma chave gerada em [Google AI Studio](https://aistudio.google.com). O `.env` não vai para o Git.
+
 ```bash
 # Windows (PowerShell)
 .\mvnw.cmd spring-boot:run
@@ -63,7 +65,7 @@ Acesse: http://localhost:8080
 - [x] Tela e endpoint de upload
 - [x] OCR com Tesseract
 - [ ] Pré-processamento com OpenCV
-- [ ] Extração de dados com IA (Gemini)
+- [x] Extração de dados com IA (Gemini)
 - [ ] Regras de validação + testes
 - [ ] Persistência com PostgreSQL
 - [ ] Tela de consulta de resultados

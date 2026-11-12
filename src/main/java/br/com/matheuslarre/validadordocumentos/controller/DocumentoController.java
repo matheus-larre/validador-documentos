@@ -1,5 +1,7 @@
 package br.com.matheuslarre.validadordocumentos.controller;
 
+import br.com.matheuslarre.validadordocumentos.ia.ExtracaoException;
+import br.com.matheuslarre.validadordocumentos.ia.GeminiService;
 import br.com.matheuslarre.validadordocumentos.service.ArmazenamentoService;
 import br.com.matheuslarre.validadordocumentos.service.OcrException;
 import br.com.matheuslarre.validadordocumentos.service.OcrService;
@@ -17,11 +19,15 @@ public class DocumentoController {
 
     private final ArmazenamentoService armazenamentoService;
     private final OcrService ocrService;
+    private final GeminiService geminiService;
 
     // Injeção de dependência pelo construtor: o Spring entrega os Services prontos
-    public DocumentoController(ArmazenamentoService armazenamentoService, OcrService ocrService) {
+    public DocumentoController(ArmazenamentoService armazenamentoService,
+                               OcrService ocrService,
+                               GeminiService geminiService) {
         this.armazenamentoService = armazenamentoService;
         this.ocrService = ocrService;
+        this.geminiService = geminiService;
     }
 
     @GetMapping("/")
@@ -42,6 +48,15 @@ public class DocumentoController {
                     + ". Salvo como " + salvo.getFileName() + ".");
             redirect.addFlashAttribute("textoExtraido",
                     texto.isBlank() ? "(nenhum texto reconhecido)" : texto);
+
+            if (!texto.isBlank()) {
+                try {
+                    redirect.addFlashAttribute("dados", geminiService.extrairDados(texto)); // 3. IA
+                } catch (ExtracaoException e) {
+                    redirect.addFlashAttribute("erro",
+                            "O texto foi lido, mas a IA não conseguiu extrair os dados: " + e.getMessage());
+                }
+            }
         } catch (IllegalArgumentException | OcrException e) {
             redirect.addFlashAttribute("erro", e.getMessage());
         }
