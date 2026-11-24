@@ -1,6 +1,7 @@
 package br.com.matheuslarre.validadordocumentos.api;
 
 import br.com.matheuslarre.validadordocumentos.model.Documento;
+import br.com.matheuslarre.validadordocumentos.model.TipoDocumento;
 import br.com.matheuslarre.validadordocumentos.validacao.StatusValidacao;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public record DocumentoResumoDto(
         UUID id,
         LocalDateTime criadoEm,
         String arquivo,
-        String tipo,
+        TipoDocumento tipo,
         String titular,
         StatusValidacao status
 ) {

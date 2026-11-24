@@ -27,8 +27,9 @@ public class Documento {
     @Column(nullable = false)
     private String nomeArquivoSalvo;
 
+    @Enumerated(EnumType.STRING) // mesmo valor de antes ("COMPROVANTE_RESIDENCIA"): os registros antigos continuam válidos
     @Column(nullable = false)
-    private String tipo;
+    private TipoDocumento tipo;
 
     @Column(columnDefinition = "TEXT")
     private String textoOcr;
@@ -41,6 +42,12 @@ public class Documento {
     private String cidade;
     private String estado;
     private LocalDate dataEmissao;
+
+    // Campos do documento de identificação (RG/CNH); ficam nulos no comprovante de residência
+    private String numeroDocumento;
+    private String tipoIdentificado;
+    private LocalDate dataNascimento;
+    private LocalDate dataValidade;
 
     // Nulo quando não foi possível validar (ex.: IA fora do ar)
     @Enumerated(EnumType.STRING) // grava "APROVADO"/"REPROVADO", não 0/1: legível e seguro se o enum mudar
@@ -62,7 +69,7 @@ public class Documento {
         // exigido pelo JPA
     }
 
-    public Documento(String nomeArquivoOriginal, String nomeArquivoSalvo, String tipo, LocalDateTime criadoEm) {
+    public Documento(String nomeArquivoOriginal, String nomeArquivoSalvo, TipoDocumento tipo, LocalDateTime criadoEm) {
         this.nomeArquivoOriginal = nomeArquivoOriginal;
         this.nomeArquivoSalvo = nomeArquivoSalvo;
         this.tipo = tipo;
@@ -74,7 +81,7 @@ public class Documento {
     public UUID getId() { return id; }
     public String getNomeArquivoOriginal() { return nomeArquivoOriginal; }
     public String getNomeArquivoSalvo() { return nomeArquivoSalvo; }
-    public String getTipo() { return tipo; }
+    public TipoDocumento getTipo() { return tipo; }
     public LocalDateTime getCriadoEm() { return criadoEm; }
 
     public String getTextoOcr() { return textoOcr; }
@@ -100,6 +107,18 @@ public class Documento {
 
     public LocalDate getDataEmissao() { return dataEmissao; }
     public void setDataEmissao(LocalDate dataEmissao) { this.dataEmissao = dataEmissao; }
+
+    public String getNumeroDocumento() { return numeroDocumento; }
+    public void setNumeroDocumento(String numeroDocumento) { this.numeroDocumento = numeroDocumento; }
+
+    public String getTipoIdentificado() { return tipoIdentificado; }
+    public void setTipoIdentificado(String tipoIdentificado) { this.tipoIdentificado = tipoIdentificado; }
+
+    public LocalDate getDataNascimento() { return dataNascimento; }
+    public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
+
+    public LocalDate getDataValidade() { return dataValidade; }
+    public void setDataValidade(LocalDate dataValidade) { this.dataValidade = dataValidade; }
 
     public StatusValidacao getStatus() { return status; }
     public void setStatus(StatusValidacao status) { this.status = status; }

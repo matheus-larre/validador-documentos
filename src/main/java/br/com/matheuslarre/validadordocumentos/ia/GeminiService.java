@@ -37,6 +37,22 @@ public class GeminiService {
             %s
             """;
 
+    // Mesmo estilo de prompt, agora para documentos de identificação
+    private static final String PROMPT_IDENTIFICACAO = """
+            Você extrai dados de documentos de identificação brasileiros (RG, CIN ou CNH).
+            O TEXTO abaixo foi obtido por OCR e pode conter pequenos erros de leitura.
+            Extraia os campos: nome (nome completo do titular), cpf,
+            numeroDocumento (número do RG ou número de registro da CNH),
+            tipoIdentificado ("RG" ou "CNH"; para CIN use "RG"),
+            dataNascimento e dataValidade (validade do documento; o RG normalmente não tem),
+            com as datas no formato AAAA-MM-DD.
+            Responda APENAS com um objeto JSON contendo exatamente essas chaves.
+            Se não encontrar um campo, use null. Não invente informações.
+
+            TEXTO:
+            %s
+            """;
+
     private static final Logger log = LoggerFactory.getLogger(GeminiService.class);
 
     // Erros temporários (servidor sobrecarregado / limite por minuto) valem uma nova tentativa
@@ -78,20 +94,33 @@ public class GeminiService {
 
     /** Envia o texto do OCR ao Gemini e devolve os dados estruturados. */
     public DadosComprovante extrairDados(String textoOcr) {
+        return extrair(PROMPT, textoOcr, DadosComprovante.class);
+    }
+
+    /** Envia o texto do OCR de um RG/CNH ao Gemini e devolve os dados de identificação. */
+    public DadosIdentificacao extrairIdentificacao(String textoOcr) {
+        return extrair(PROMPT_IDENTIFICACAO, textoOcr, DadosIdentificacao.class);
+    }
+
+    /**
+     * Fluxo comum aos dois tipos de documento: muda só o prompt e o record de destino.
+     * <T> é um tipo genérico: o mesmo método devolve DadosComprovante ou DadosIdentificacao.
+     */
+    private <T> T extrair(String prompt, String textoOcr, Class<T> tipo) {
         if (apiKey == null || apiKey.isBlank()) {
             throw new ExtracaoException("Chave do Gemini não configurada. Defina GEMINI_API_KEY no arquivo .env.");
         }
 
         // Corpo da requisição no formato da API do Gemini
         Map<String, Object> corpo = Map.of(
-                "contents", List.of(Map.of("parts", List.of(Map.of("text", PROMPT.formatted(textoOcr))))),
+                "contents", List.of(Map.of("parts", List.of(Map.of("text", prompt.formatted(textoOcr))))),
                 "generationConfig", Map.of(
                         "responseMimeType", "application/json", // pede JSON puro na resposta
                         "temperature", 0                        // respostas mais previsíveis
                 )
         );
 
-        return converterResposta(extrairTexto(chamarComNovaTentativa(corpo)));
+        return converterResposta(extrairTexto(chamarComNovaTentativa(corpo)), tipo);
     }
 
     private RespostaGemini chamarComNovaTentativa(Map<String, Object> corpo) {
@@ -148,8 +177,12 @@ public class GeminiService {
 
     /** Converte o JSON devolvido pela IA no record. Sem "private" para poder ser testado. */
     DadosComprovante converterResposta(String json) {
+        return converterResposta(json, DadosComprovante.class);
+    }
+
+    <T> T converterResposta(String json, Class<T> tipo) {
         try {
-            return jsonMapper.readValue(removerBlocoDeCodigo(json), DadosComprovante.class);
+            return jsonMapper.readValue(removerBlocoDeCodigo(json), tipo);
         } catch (JacksonException e) {
             throw new ExtracaoException("O Gemini devolveu uma resposta que não é um JSON válido.", e);
         }

@@ -1,8 +1,10 @@
 package br.com.matheuslarre.validadordocumentos.api;
 
 import br.com.matheuslarre.validadordocumentos.ia.DadosComprovante;
+import br.com.matheuslarre.validadordocumentos.ia.DadosIdentificacao;
 import br.com.matheuslarre.validadordocumentos.ia.GeminiService;
 import br.com.matheuslarre.validadordocumentos.model.Documento;
+import br.com.matheuslarre.validadordocumentos.model.TipoDocumento;
 import br.com.matheuslarre.validadordocumentos.repository.DocumentoRepository;
 import br.com.matheuslarre.validadordocumentos.service.OcrService;
 import br.com.matheuslarre.validadordocumentos.validacao.StatusValidacao;
@@ -79,6 +81,29 @@ class DocumentoApiControllerTest {
     }
 
     @Test
+    void postDeRgOuCnhDeveDevolverOsDadosDeIdentificacao() throws Exception {
+        LocalDate hoje = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
+        when(ocrService.extrairTexto(any())).thenReturn(TEXTO_OCR);
+        when(geminiService.extrairIdentificacao(anyString())).thenReturn(new DadosIdentificacao("MARIA TESTE DA SILVA",
+                "529.982.247-25", "01234567890", "CNH", LocalDate.of(1995, 3, 10), hoje.plusYears(3)));
+
+        mvc.perform(multipart("/api/documentos").file(png).param("tipo", "DOCUMENTO_IDENTIFICACAO"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.tipo").value("DOCUMENTO_IDENTIFICACAO"))
+                .andExpect(jsonPath("$.status").value("APROVADO"))
+                .andExpect(jsonPath("$.dados.numeroDocumento").value("01234567890"))
+                .andExpect(jsonPath("$.dados.dataNascimento").value("1995-03-10"))
+                .andExpect(jsonPath("$.dados.cep").doesNotExist()); // campos do comprovante não aparecem
+    }
+
+    @Test
+    void postComTipoDesconhecidoDeveResponder400() throws Exception {
+        mvc.perform(multipart("/api/documentos").file(png).param("tipo", "PASSAPORTE"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value(containsString("não suportado")));
+    }
+
+    @Test
     void postComFormatoNaoSuportadoDeveResponder400EmProblemDetail() throws Exception {
         MockMultipartFile txt = new MockMultipartFile("arquivo", "nota.txt", "text/plain", "oi".getBytes());
 
@@ -98,7 +123,7 @@ class DocumentoApiControllerTest {
 
     @Test
     void getDeveListarHistoricoResumido() throws Exception {
-        Documento doc = new Documento("conta.png", "uuid.png", "COMPROVANTE_RESIDENCIA", LocalDateTime.now());
+        Documento doc = new Documento("conta.png", "uuid.png", TipoDocumento.COMPROVANTE_RESIDENCIA, LocalDateTime.now());
         doc.setNome("MARIA TESTE");
         doc.setStatus(StatusValidacao.REPROVADO);
         repository.save(doc);
@@ -115,7 +140,7 @@ class DocumentoApiControllerTest {
     @Test
     void getPorIdDeveDevolverDetalhe() throws Exception {
         Documento doc = repository.save(
-                new Documento("conta.png", "uuid.png", "COMPROVANTE_RESIDENCIA", LocalDateTime.now()));
+                new Documento("conta.png", "uuid.png", TipoDocumento.COMPROVANTE_RESIDENCIA, LocalDateTime.now()));
 
         mvc.perform(get("/api/documentos/{id}", doc.getId()))
                 .andExpect(status().isOk())

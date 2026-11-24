@@ -1,6 +1,6 @@
 package br.com.matheuslarre.validadordocumentos.service;
 
-import br.com.matheuslarre.validadordocumentos.ia.DadosComprovante;
+import br.com.matheuslarre.validadordocumentos.ia.DadosExtraidos;
 import br.com.matheuslarre.validadordocumentos.validacao.ResultadoValidacao;
 
 import java.util.UUID;
@@ -13,7 +13,7 @@ public record ResultadoProcessamento(
         UUID documentoId,
         String nomeArquivoSalvo,
         String textoOcr,
-        DadosComprovante dados,
+        DadosExtraidos dados,
         ResultadoValidacao validacao,
         String erroIa
 ) {

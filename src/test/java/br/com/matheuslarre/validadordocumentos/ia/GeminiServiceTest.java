@@ -12,6 +12,7 @@ import tools.jackson.databind.json.JsonMapper;
 import java.time.Duration;
 import java.time.LocalDate;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
@@ -89,6 +90,24 @@ class GeminiServiceTest {
 
         assertEquals("Maria Teste", dados.nome());
         assertEquals("PE", dados.estado());
+        servidor.verify();
+    }
+
+    @Test
+    void deveExtrairDadosDeIdentificacaoComOutroPrompt() {
+        String respostaIdentificacao = """
+                {"candidates":[{"content":{"parts":[{"text":"{\\"nome\\":\\"Maria Teste\\",\\"numeroDocumento\\":\\"01234567890\\",\\"tipoIdentificado\\":\\"CNH\\",\\"dataNascimento\\":\\"1995-03-10\\",\\"dataValidade\\":null}"}]}}]}
+                """;
+        servidor.expect(requestTo(URL))
+                .andExpect(content().string(containsString("documentos de identificação"))) // prompt certo
+                .andRespond(withSuccess(respostaIdentificacao, MediaType.APPLICATION_JSON));
+
+        DadosIdentificacao dados = comServidorSimulado.extrairIdentificacao("texto do OCR");
+
+        assertEquals("01234567890", dados.numeroDocumento());
+        assertTrue(dados.ehCnh());
+        assertEquals(LocalDate.of(1995, 3, 10), dados.dataNascimento());
+        assertNull(dados.dataValidade());
         servidor.verify();
     }
 

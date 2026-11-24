@@ -1,9 +1,11 @@
 package br.com.matheuslarre.validadordocumentos.service;
 
 import br.com.matheuslarre.validadordocumentos.ia.DadosComprovante;
+import br.com.matheuslarre.validadordocumentos.ia.DadosIdentificacao;
 import br.com.matheuslarre.validadordocumentos.ia.ExtracaoException;
 import br.com.matheuslarre.validadordocumentos.ia.GeminiService;
 import br.com.matheuslarre.validadordocumentos.model.Documento;
+import br.com.matheuslarre.validadordocumentos.model.TipoDocumento;
 import br.com.matheuslarre.validadordocumentos.repository.DocumentoRepository;
 import br.com.matheuslarre.validadordocumentos.validacao.StatusValidacao;
 import br.com.matheuslarre.validadordocumentos.validacao.ValidacaoService;
@@ -105,5 +107,32 @@ class ProcessamentoServiceTest {
 
         assertThrows(IllegalArgumentException.class, () -> service.processar("COMPROVANTE_RESIDENCIA", arquivo));
         verifyNoInteractions(ocr, gemini, repository);
+    }
+
+    @Test
+    void deveUsarPromptERegrasDeIdentificacaoParaRgOuCnh() {
+        when(ocr.extrairTexto(any())).thenReturn(TEXTO_OCR);
+        when(gemini.extrairIdentificacao(TEXTO_OCR)).thenReturn(new DadosIdentificacao("MARIA TESTE DA SILVA",
+                "529.982.247-25", "01234567890", "CNH", LocalDate.of(1995, 3, 10), HOJE.plusYears(3)));
+
+        ResultadoProcessamento resultado = service.processar("DOCUMENTO_IDENTIFICACAO", arquivo);
+
+        assertEquals(StatusValidacao.APROVADO, resultado.validacao().status());
+        verify(gemini, never()).extrairDados(anyString()); // não usa o prompt do comprovante
+        Documento gravado = documentoGravado();
+        assertEquals(TipoDocumento.DOCUMENTO_IDENTIFICACAO, gravado.getTipo());
+        assertEquals("01234567890", gravado.getNumeroDocumento());
+        assertEquals("CNH", gravado.getTipoIdentificado());
+        assertEquals(LocalDate.of(1995, 3, 10), gravado.getDataNascimento());
+        assertNull(gravado.getCep(), "campos do comprovante ficam vazios");
+    }
+
+    @Test
+    void naoDeveNemSalvarOArquivoComTipoDesconhecido() {
+        IllegalArgumentException erro = assertThrows(IllegalArgumentException.class,
+                () -> service.processar("PASSAPORTE", arquivo));
+
+        assertTrue(erro.getMessage().contains("não suportado"));
+        verifyNoInteractions(armazenamento, ocr, gemini, repository);
     }
 }

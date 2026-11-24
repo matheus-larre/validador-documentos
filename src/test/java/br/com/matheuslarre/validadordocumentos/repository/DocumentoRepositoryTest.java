@@ -1,6 +1,7 @@
 package br.com.matheuslarre.validadordocumentos.repository;
 
 import br.com.matheuslarre.validadordocumentos.model.Documento;
+import br.com.matheuslarre.validadordocumentos.model.TipoDocumento;
 import br.com.matheuslarre.validadordocumentos.model.RegraAplicada;
 import br.com.matheuslarre.validadordocumentos.validacao.StatusValidacao;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,7 @@ class DocumentoRepositoryTest {
 
     @Test
     void deveSalvarERecuperarDocumentoComChecklist() {
-        Documento doc = new Documento("conta.png", "uuid.png", "COMPROVANTE_RESIDENCIA",
+        Documento doc = new Documento("conta.png", "uuid.png", TipoDocumento.COMPROVANTE_RESIDENCIA,
                 LocalDateTime.of(2026, 11, 24, 20, 0));
         doc.setNome("MARIA TESTE");
         doc.setDataEmissao(LocalDate.of(2026, 11, 10));
@@ -52,8 +53,8 @@ class DocumentoRepositoryTest {
 
     @Test
     void deveListarHistoricoDoMaisRecenteParaOMaisAntigo() {
-        repository.save(new Documento("antigo.png", "a.png", "COMPROVANTE_RESIDENCIA", LocalDateTime.of(2026, 11, 1, 9, 0)));
-        repository.save(new Documento("novo.png", "b.png", "COMPROVANTE_RESIDENCIA", LocalDateTime.of(2026, 11, 24, 9, 0)));
+        repository.save(new Documento("antigo.png", "a.png", TipoDocumento.COMPROVANTE_RESIDENCIA, LocalDateTime.of(2026, 11, 1, 9, 0)));
+        repository.save(new Documento("novo.png", "b.png", TipoDocumento.COMPROVANTE_RESIDENCIA, LocalDateTime.of(2026, 11, 24, 9, 0)));
 
         List<Documento> historico = repository.findAllByOrderByCriadoEmDesc();
 
