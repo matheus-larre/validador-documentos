@@ -1,0 +1,153 @@
+/* ===== Página "Como funciona" (usa as variáveis e classes do style.css) ===== */
+
+/* Abertura: título grande à esquerda, problema/solução à direita (como a referência) */
+.cf-abertura {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+    padding: 24px 0 40px;
+}
+.cf-titulo { font-size: clamp(36px, 5.5vw, 60px); line-height: 1.05; margin: 0; }
+.cf-problema-solucao { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.cf-problema-solucao h2 { margin: 14px 0 6px; }
+.cf-problema-solucao p { margin: 0; color: var(--texto-suave); font-size: 14px; }
+
+/* Seções */
+.cf-secao { padding: 48px 0 8px; border-top: 1px solid var(--cinza-azulado); margin-top: 24px; }
+.cf-secao-titulo { font-size: clamp(24px, 3vw, 32px); font-weight: 800; letter-spacing: -0.03em; margin: 0 0 6px; }
+.cf-secao-sub { margin: 0 0 28px; color: var(--texto-suave); }
+
+/* Fluxo: 5 etapas ligadas por uma linha */
+.cf-fluxo {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    position: relative;
+}
+.cf-fluxo::before {
+    content: "";
+    position: absolute;
+    top: 26px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--lilas), var(--lavanda), var(--azul-pastel));
+}
+.cf-fluxo li { position: relative; text-align: center; }
+.cf-fluxo-icone {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: var(--branco);
+    border: 1.5px solid var(--texto);
+    position: relative;
+}
+.cf-fluxo h3 { margin: 14px 0 4px; font-size: 16px; }
+.cf-fluxo p { margin: 0 0 10px; color: var(--texto-suave); font-size: 14px; }
+.cf-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #F0EDFF;
+    border: 1px solid var(--lilas);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* Como usar */
+.cf-passos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.cf-passos .painel + .painel { margin-top: 0; }
+.cf-passos h3 { margin: 14px 0 6px; font-size: 17px; }
+.cf-passos p { margin: 0; color: var(--texto-suave); font-size: 14px; }
+.cf-passos a { font-weight: 600; color: var(--texto); }
+.cf-passo-numero {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--texto);
+    color: var(--branco);
+    font-weight: 800;
+}
+
+/* Regras */
+.cf-regras {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+.cf-regras li {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--branco);
+    border: 1px solid var(--cinza-azulado);
+    border-left: 4px solid var(--lilas);
+}
+.cf-regras strong { display: block; font-size: 15px; margin-bottom: 2px; }
+.cf-regras span { color: var(--texto-suave); font-size: 13px; }
+
+/* API: quadro em estilo de código */
+.cf-api {
+    display: grid;
+    gap: 10px;
+    padding: 20px;
+    border-radius: var(--raio);
+    background: var(--texto);
+    color: #E9E6FF;
+    font-size: 14px;
+}
+.cf-api div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.cf-api code { font-family: Consolas, "SFMono-Regular", Menlo, monospace; font-size: 14px; color: var(--branco); }
+.cf-api small { color: #B9B4D6; font-size: 13px; }
+.cf-metodo {
+    min-width: 52px;
+    text-align: center;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--azul-pastel);
+    color: var(--texto);
+    font-size: 12px;
+    font-weight: 800;
+}
+.cf-metodo.cf-post { background: var(--lilas); }
+
+/* Fechamento */
+.cf-final { margin-top: 56px; text-align: center; padding: 40px 24px; }
+.cf-final h2 { font-size: clamp(22px, 3vw, 28px); margin-bottom: 6px; }
+.cf-final p { margin: 0 0 22px; color: var(--texto-suave); }
+
+/* ===== Surgir ao rolar: só quando há JavaScript (sem JS, tudo aparece normalmente) ===== */
+.js .revelar {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .6s cubic-bezier(.2, .7, .2, 1), transform .6s cubic-bezier(.2, .7, .2, 1);
+    transition-delay: calc(var(--ordem, 0) * 90ms);
+}
+.js .revelar.visivel { opacity: 1; transform: none; }
+
+/* ===== Telas menores ===== */
+@media (max-width: 860px) {
+    .cf-abertura { grid-template-columns: 1fr; gap: 28px; }
+    .cf-fluxo { grid-template-columns: 1fr; gap: 20px; }
+    .cf-fluxo::before { top: 0; bottom: 0; left: 26px; right: auto; width: 2px; height: auto;
+        background: linear-gradient(180deg, var(--lilas), var(--azul-pastel)); }
+    .cf-fluxo li { display: grid; grid-template-columns: 54px 1fr; column-gap: 16px; text-align: left; }
+    .cf-fluxo-icone { grid-row: span 3; margin: 0; }
+    .cf-fluxo h3 { margin-top: 2px; }
+    .cf-fluxo .cf-tag { justify-self: start; }
+    .cf-passos { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+    .cf-problema-solucao { grid-template-columns: 1fr; }
+}

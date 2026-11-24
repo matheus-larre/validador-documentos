@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabeca('Como funciona')}"></head>
+<body>
+<!-- Marca que há JavaScript: só então as seções começam invisíveis e "surgem" ao rolar -->
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" th:href="@{/css/como-funciona.css}">
+
+<header th:replace="~{fragmentos :: barra('como-funciona')}"></header>
+
+<main class="pagina">
+
+    <!-- ===== 1. Abertura: problema e solução ===== -->
+    <section class="cf-abertura">
+        <h1 class="cf-titulo surgir">Do documento à decisão, <span class="destaque">em segundos</span></h1>
+        <div class="cf-problema-solucao">
+            <div class="surgir" style="--ordem: 1">
+                <span class="etapa-icone" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
+                    </svg>
+                </span>
+                <h2>O problema</h2>
+                <p>Conferir comprovantes à mão no cadastro é lento, sujeito a erro e gera retrabalho
+                    para a equipe de backoffice.</p>
+            </div>
+            <div class="surgir" style="--ordem: 2">
+                <span class="etapa-icone" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+                        <path d="M9 18h6"/><path d="M10 22h4"/>
+                    </svg>
+                </span>
+                <h2>A solução</h2>
+                <p>O sistema lê o documento, a IA extrai os dados e regras objetivas decidem:
+                    aprovado ou reprovado, sempre com o motivo.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 2. O fluxo ===== -->
+    <section class="cf-secao">
+        <h2 class="cf-secao-titulo revelar">O fluxo</h2>
+        <p class="cf-secao-sub revelar">Cada etapa tem uma tecnologia responsável.</p>
+        <ol class="cf-fluxo">
+            <li class="revelar" style="--ordem: 0">
+                <span class="cf-fluxo-icone" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                </span>
+                <h3>Envio</h3>
+                <p>O analista envia o PDF ou a imagem.</p>
+                <span class="cf-tag">PDF · PNG · JPG</span>
+            </li>
+            <li class="revelar" style="--ordem: 1">
+                <span class="cf-fluxo-icone" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/></svg>
+                </span>
+                <h3>Leitura</h3>
+                <p>O OCR transforma a imagem em texto.</p>
+                <span class="cf-tag">Tesseract</span>
+            </li>
+            <li class="revelar" style="--ordem: 2">
+                <span class="cf-fluxo-icone" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                </span>
+                <h3>Interpretação</h3>
+                <p>A IA organiza o texto em dados estruturados.</p>
+                <span class="cf-tag">Gemini</span>
+            </li>
+            <li class="revelar" style="--ordem: 3">
+                <span class="cf-fluxo-icone" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+                </span>
+                <h3>Regras</h3>
+                <p>As regras de negócio conferem cada dado.</p>
+                <span class="cf-tag">Java · Spring Boot</span>
+            </li>
+            <li class="revelar" style="--ordem: 4">
+                <span class="cf-fluxo-icone" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+                </span>
+                <h3>Resultado</h3>
+                <p>A decisão fica salva e disponível para consulta.</p>
+                <span class="cf-tag">PostgreSQL</span>
+            </li>
+        </ol>
+    </section>
+
+    <!-- ===== 3. Como usar ===== -->
+    <section class="cf-secao">
+        <h2 class="cf-secao-titulo revelar">Como usar</h2>
+        <div class="cf-passos">
+            <div class="painel revelar" style="--ordem: 0">
+                <span class="cf-passo-numero">1</span>
+                <h3>Envie o arquivo</h3>
+                <p>Em <a th:href="@{/}">Enviar documento</a>, escolha o tipo e arraste o comprovante (PDF, PNG ou JPG, até 10MB).</p>
+            </div>
+            <div class="painel revelar" style="--ordem: 1">
+                <span class="cf-passo-numero">2</span>
+                <h3>Aguarde alguns segundos</h3>
+                <p>O sistema lê o documento, extrai os dados com IA e aplica as regras automaticamente.</p>
+            </div>
+            <div class="painel revelar" style="--ordem: 2">
+                <span class="cf-passo-numero">3</span>
+                <h3>Confira o resultado</h3>
+                <p>Veja o selo, o checklist com o motivo de cada regra e os dados. Tudo fica no <a th:href="@{/documentos}">Histórico</a>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 4. Regras ===== -->
+    <section class="cf-secao">
+        <h2 class="cf-secao-titulo revelar">Regras de validação</h2>
+        <p class="cf-secao-sub revelar">O documento só é <strong>aprovado</strong> se todas as regras forem atendidas.</p>
+        <ul class="cf-regras">
+            <li class="revelar" style="--ordem: 0"><strong>Documento legível</strong><span>O OCR reconhece texto suficiente no arquivo.</span></li>
+            <li class="revelar" style="--ordem: 1"><strong>Nome identificado</strong><span>O titular do comprovante foi encontrado.</span></li>
+            <li class="revelar" style="--ordem: 2"><strong>CPF válido</strong><span>11 dígitos, não repetidos, com os dígitos verificadores corretos (módulo 11).</span></li>
+            <li class="revelar" style="--ordem: 3"><strong>Endereço identificado</strong><span>O endereço do titular foi encontrado.</span></li>
+            <li class="revelar" style="--ordem: 4"><strong>CEP válido</strong><span>CEP com 8 dígitos.</span></li>
+            <li class="revelar" style="--ordem: 5"><strong>Estado válido</strong><span>Uma das 27 UFs brasileiras.</span></li>
+            <li class="revelar" style="--ordem: 6"><strong>Emissão recente</strong><span>Emitido há no máximo 90 dias e sem data no futuro.</span></li>
+        </ul>
+    </section>
+
+    <!-- ===== 5. API REST ===== -->
+    <section class="cf-secao">
+        <h2 class="cf-secao-titulo revelar">Para outros sistemas: API REST</h2>
+        <p class="cf-secao-sub revelar">O mesmo fluxo da tela, com respostas em JSON.</p>
+        <div class="cf-api revelar">
+            <div><span class="cf-metodo cf-post">POST</span><code>/api/documentos</code><small>envia um documento (multipart: tipo + arquivo) → 201</small></div>
+            <div><span class="cf-metodo">GET</span><code>/api/documentos</code><small>lista o histórico resumido</small></div>
+            <div><span class="cf-metodo">GET</span><code>/api/documentos/{id}</code><small>detalhe completo, ou 404</small></div>
+        </div>
+    </section>
+
+    <!-- ===== 6. Fechamento ===== -->
+    <section class="cf-final painel revelar">
+        <h2>Pronto para validar?</h2>
+        <p>Use apenas documentos de teste: os dados enviados ficam salvos no histórico.</p>
+        <a class="botao" th:href="@{/}">Enviar um documento</a>
+    </section>
+</main>
+
+<footer th:replace="~{fragmentos :: rodape}"></footer>
+<script th:src="@{/js/revelar.js}" defer></script>
+</body>
+</html>
