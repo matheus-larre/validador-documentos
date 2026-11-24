@@ -1,6 +1,7 @@
 package br.com.matheuslarre.validadordocumentos.validacao;
 
 import br.com.matheuslarre.validadordocumentos.ia.DadosComprovante;
+import br.com.matheuslarre.validadordocumentos.ia.DadosIdentificacao;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -224,6 +225,117 @@ class ValidacaoServiceTest {
         @Test
         void deveRecusarSemData() {
             assertFalse(service.emissaoRecente(null).aprovada());
+        }
+    }
+
+    // ===== Documento de identificação (RG / CNH) =====
+
+    private static DadosIdentificacao cnh(LocalDate nascimento, LocalDate validade) {
+        return new DadosIdentificacao("MARIA TESTE DA SILVA", "529.982.247-25", "01234567890", "CNH", nascimento, validade);
+    }
+
+    private static DadosIdentificacao rg(LocalDate nascimento) {
+        return new DadosIdentificacao("MARIA TESTE DA SILVA", "529.982.247-25", "12.345.678-9", "RG", nascimento, null);
+    }
+
+    @Nested
+    class Identificacao {
+
+        private final LocalDate adulto = LocalDate.of(1995, 3, 10);
+
+        @Test
+        void deveAprovarCnhValidaDeAdulto() {
+            ResultadoValidacao resultado = service.validarIdentificacao(TEXTO_OCR, cnh(adulto, HOJE.plusYears(3)));
+
+            assertEquals(StatusValidacao.APROVADO, resultado.status());
+            assertEquals(7, resultado.regras().size());
+        }
+
+        @Test
+        void deveAprovarRgSemValidade() {
+            ResultadoValidacao resultado = service.validarIdentificacao(TEXTO_OCR, rg(adulto));
+
+            assertEquals(StatusValidacao.APROVADO, resultado.status());
+            assertTrue(service.dentroDaValidade(rg(adulto)).motivo().contains("sem data de validade"));
+        }
+
+        @Test
+        void deveReprovarDocumentoIlegivelSemDadosDaIa() {
+            ResultadoValidacao resultado = service.validarIdentificacao("", null);
+
+            assertEquals(StatusValidacao.REPROVADO, resultado.status());
+            assertEquals(7, resultado.regras().size());
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void deveRecusarSemNumeroDoDocumento(String numero) {
+            assertFalse(service.numeroDocumentoIdentificado(numero).aprovada());
+        }
+
+        // --- Maior de idade ---
+
+        @Test
+        void deveAceitarQuemFazDezoitoAnosHoje() {
+            assertTrue(service.maiorDeIdade(HOJE.minusYears(18)).aprovada());
+        }
+
+        @Test
+        void deveRecusarQuemFazDezoitoAnosAmanha() {
+            RegraResultado regra = service.maiorDeIdade(HOJE.minusYears(18).plusDays(1));
+
+            assertFalse(regra.aprovada());
+            assertTrue(regra.motivo().contains("17 anos"));
+        }
+
+        @Test
+        void deveRecusarIdadeSemDataDeNascimento() {
+            assertFalse(service.maiorDeIdade(null).aprovada());
+        }
+
+        // --- Data de nascimento ---
+
+        @Test
+        void deveRecusarNascimentoNoFuturo() {
+            assertFalse(service.dataNascimentoValida(HOJE.plusDays(1)).aprovada());
+        }
+
+        @Test
+        void deveRecusarIdadeImpossivel() {
+            assertFalse(service.dataNascimentoValida(HOJE.minusYears(131)).aprovada());
+        }
+
+        @Test
+        void deveAceitarNascimentoPlausivel() {
+            assertTrue(service.dataNascimentoValida(adulto).aprovada());
+        }
+
+        // --- Validade ---
+
+        @Test
+        void deveAceitarCnhQueVenceHoje() {
+            assertTrue(service.dentroDaValidade(cnh(adulto, HOJE)).aprovada());
+        }
+
+        @Test
+        void deveRecusarCnhVencidaOntem() {
+            RegraResultado regra = service.dentroDaValidade(cnh(adulto, HOJE.minusDays(1)));
+
+            assertFalse(regra.aprovada());
+            assertTrue(regra.motivo().contains("vencido"));
+        }
+
+        @Test
+        void deveRecusarCnhSemValidade() {
+            assertFalse(service.dentroDaValidade(cnh(adulto, null)).aprovada());
+        }
+
+        @Test
+        void deveReprovarCnhVencidaMesmoComOResto() {
+            ResultadoValidacao resultado = service.validarIdentificacao(TEXTO_OCR, cnh(adulto, HOJE.minusYears(1)));
+
+            assertEquals(StatusValidacao.REPROVADO, resultado.status());
+            assertEquals(1, resultado.regras().stream().filter(r -> !r.aprovada()).count());
         }
     }
 }
