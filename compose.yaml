@@ -1,0 +1,43 @@
+# Sobe a aplicação + PostgreSQL com um comando:  docker compose up --build
+# Só o banco (para desenvolver com .\mvnw.cmd spring-boot:run):  docker compose up -d db
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: validador
+      POSTGRES_USER: validador
+      POSTGRES_PASSWORD: validador
+    ports:
+      - "5432:5432"
+    volumes:
+      - dados-postgres:/var/lib/postgresql/data   # os dados sobrevivem a "docker compose down"
+    healthcheck:
+      # "Saudável" = o Postgres já aceita conexões (não basta o container ter iniciado)
+      test: ["CMD-SHELL", "pg_isready -U validador -d validador"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    env_file:
+      - path: .env        # GEMINI_API_KEY e GEMINI_MODEL: lidos ao rodar, nunca gravados na imagem
+        required: false
+    environment:
+      # Dentro da rede do Compose, o banco é encontrado pelo nome do serviço ("db")
+      DB_URL: jdbc:postgresql://db:5432/validador
+      DB_USER: validador
+      DB_PASSWORD: validador
+    depends_on:
+      db:
+        condition: service_healthy   # só sobe a aplicação quando o banco estiver pronto
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads:/app/uploads         # os arquivos enviados também sobrevivem
+    restart: unless-stopped
+
+volumes:
+  dados-postgres:
+  uploads:
