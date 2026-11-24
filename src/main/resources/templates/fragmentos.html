@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Topo compartilhado por todas as telas: marca + menu. "ativo" destaca a página atual. -->
+<header th:fragment="topo(ativo)" class="topo">
+    <p class="marca">Validador Inteligente de Documentos</p>
+    <nav class="menu" aria-label="Menu principal">
+        <a th:href="@{/}" th:classappend="${ativo == 'enviar'} ? 'ativo'">Enviar documento</a>
+        <a th:href="@{/documentos}" th:classappend="${ativo == 'historico'} ? 'ativo'">Histórico</a>
+    </nav>
+</header>
+
+<!-- Mensagens de sucesso/erro vindas do Controller (flash attributes) -->
+<div th:fragment="alertas">
+    <div th:if="${sucesso}" class="alerta sucesso" th:text="${sucesso}"></div>
+    <div th:if="${erro}" class="alerta erro" th:text="${erro}"></div>
+</div>
+
+</body>
+</html>

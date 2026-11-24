@@ -8,13 +8,12 @@
 </head>
 <body>
 <main class="card">
-    <p class="marca">Validador Inteligente de Documentos</p>
-    <h1>Enviar documento</h1>
-    <p class="subtitulo">Faça o upload do documento para iniciarmos a extração das informações.</p>
+    <header th:replace="~{fragmentos :: topo('enviar')}"></header>
 
-    <!-- Só aparecem se o Controller mandar essas mensagens -->
-    <div th:if="${sucesso}" class="alerta sucesso" th:text="${sucesso}"></div>
-    <div th:if="${erro}" class="alerta erro" th:text="${erro}"></div>
+    <h1>Enviar documento</h1>
+    <p class="subtitulo">Envie o comprovante: o sistema lê o texto, extrai os dados com IA e aplica as regras de validação.</p>
+
+    <div th:replace="~{fragmentos :: alertas}"></div>
 
     <!-- enctype multipart/form-data é OBRIGATÓRIO para enviar arquivos -->
     <form th:action="@{/documentos}" method="post" enctype="multipart/form-data">
@@ -28,45 +27,6 @@
 
         <button type="submit">Processar documento</button>
     </form>
-
-    <!-- Resultado da validação: selo + checklist de regras -->
-    <section th:if="${resultado}" class="resultado">
-        <div class="selo" th:classappend="${resultado.aprovado()} ? 'selo-aprovado' : 'selo-reprovado'">
-            <span class="selo-icone" th:text="${resultado.aprovado()} ? '✓' : '✗'"></span>
-            <span th:text="${resultado.status()}">APROVADO</span>
-        </div>
-
-        <h2>Regras de validação</h2>
-        <ul class="checklist">
-            <li th:each="regra : ${resultado.regras()}" th:classappend="${regra.aprovada()} ? 'ok' : 'falha'">
-                <span class="check-icone" th:text="${regra.aprovada()} ? '✓' : '✗'"></span>
-                <div>
-                    <strong th:text="${regra.nome()}"></strong>
-                    <small th:text="${regra.motivo()}"></small>
-                </div>
-            </li>
-        </ul>
-    </section>
-
-    <!-- Dados estruturados pela IA: só aparece quando a extração deu certo -->
-    <section th:if="${dados}" class="resultado">
-        <h2>Dados extraídos (IA)</h2>
-        <table class="dados">
-            <tr><th>Nome</th><td th:text="${dados.nome() ?: '—'}"></td></tr>
-            <tr><th>CPF</th><td th:text="${dados.cpf() ?: '—'}"></td></tr>
-            <tr><th>Endereço</th><td th:text="${dados.endereco() ?: '—'}"></td></tr>
-            <tr><th>CEP</th><td th:text="${dados.cep() ?: '—'}"></td></tr>
-            <tr><th>Cidade</th><td th:text="${dados.cidade() ?: '—'}"></td></tr>
-            <tr><th>Estado</th><td th:text="${dados.estado() ?: '—'}"></td></tr>
-            <tr><th>Data de emissão</th><td th:text="${dados.dataEmissao() ?: '—'}"></td></tr>
-        </table>
-    </section>
-
-    <!-- Resultado do OCR: só aparece depois de um envio com sucesso -->
-    <section th:if="${textoExtraido}" class="resultado">
-        <h2>Texto extraído (OCR)</h2>
-        <pre th:text="${textoExtraido}"></pre>
-    </section>
 </main>
 </body>
 </html>

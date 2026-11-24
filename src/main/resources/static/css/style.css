@@ -170,6 +170,74 @@ button:active { transform: translateY(0); }
 .checklist li.ok .check-icone { color: #1E6B3A; }
 .checklist li.falha .check-icone { color: #A12A3A; }
 
+.selo-neutro { background: var(--fundo); color: var(--texto-suave); border-color: var(--cinza-azulado); font-size: 20px; }
+
+/* ===== Topo com marca + menu (compartilhado pelas telas) ===== */
+.topo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.topo .marca { margin: 0; }
+.menu { display: flex; gap: 6px; flex-wrap: wrap; }
+.menu a {
+    text-decoration: none;
+    color: var(--texto-suave);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+}
+.menu a:hover { background: var(--fundo); border-color: var(--cinza-azulado); }
+.menu a.ativo { background: var(--lilas); color: var(--texto); }
+
+.card.larga { max-width: 900px; }
+.meta { color: var(--texto-suave); font-size: 14px; margin: 0 0 20px; overflow-wrap: anywhere; }
+
+/* ===== Botões em forma de link ===== */
+.acoes { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+.botao {
+    flex: 1 1 200px;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--lilas), var(--lavanda));
+    color: var(--texto);
+    font-weight: 700;
+}
+.botao:hover { box-shadow: 0 6px 16px var(--sombra); }
+.botao-secundario { background: var(--fundo); border: 1px solid var(--cinza-azulado); }
+
+/* ===== Histórico ===== */
+.tabela-rolagem { overflow-x: auto; }
+.historico { width: 100%; border-collapse: collapse; font-size: 14px; }
+.historico th {
+    text-align: left;
+    padding: 10px;
+    color: var(--texto-suave);
+    background: var(--fundo);
+    border-bottom: 1px solid var(--cinza-azulado);
+    white-space: nowrap;
+}
+.historico td { padding: 10px; border-bottom: 1px solid var(--cinza-azulado); white-space: nowrap; }
+.historico td.quebra { white-space: normal; overflow-wrap: anywhere; min-width: 140px; }
+.historico a { color: var(--texto); font-weight: 600; }
+.historico tbody tr:hover { background: #FAF8FF; }
+
+.chip { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; border: 1px solid; }
+.chip-aprovado { background: #E8F6EE; color: #1E6B3A; border-color: #8FD3A8; }
+.chip-reprovado { background: #FDEDEF; color: #A12A3A; border-color: #F2A7B3; }
+.chip-neutro { background: var(--fundo); color: var(--texto-suave); border-color: var(--cinza-azulado); }
+
+.vazio { text-align: center; color: var(--texto-suave); padding: 24px 0; }
+.vazio a { color: var(--texto); font-weight: 600; }
+
 /* ===== Tabela de dados extraídos pela IA ===== */
 .dados { width: 100%; border-collapse: collapse; font-size: 14px; }
 .dados th {

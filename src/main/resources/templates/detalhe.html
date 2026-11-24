@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado da validação</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main class="card">
+    <header th:replace="~{fragmentos :: topo('')}"></header>
+
+    <h1>Resultado da validação</h1>
+    <p class="meta">
+        <span th:text="${doc.nomeArquivoOriginal}">arquivo.png</span> ·
+        Comprovante de residência ·
+        enviado em <span th:text="${#temporals.format(doc.criadoEm, 'dd/MM/yyyy HH:mm')}">24/11/2026 19:42</span>
+    </p>
+
+    <div th:replace="~{fragmentos :: alertas}"></div>
+
+    <!-- Selo: APROVADO / REPROVADO, ou "não validado" quando a IA falhou -->
+    <div th:if="${doc.status != null}" class="selo"
+         th:classappend="${doc.status.name() == 'APROVADO'} ? 'selo-aprovado' : 'selo-reprovado'">
+        <span class="selo-icone" th:text="${doc.status.name() == 'APROVADO'} ? '✓' : '✗'"></span>
+        <span th:text="${doc.status}">APROVADO</span>
+    </div>
+    <div th:if="${doc.status == null}">
+        <div class="selo selo-neutro"><span>NÃO VALIDADO</span></div>
+        <div class="alerta erro"
+             th:text="'A IA não conseguiu extrair os dados: ' + ${doc.erroProcessamento} + ' Envie o documento novamente.'"></div>
+    </div>
+
+    <!-- Checklist das regras -->
+    <section th:if="${!doc.regras.isEmpty()}" class="resultado">
+        <h2>Regras de validação</h2>
+        <ul class="checklist">
+            <li th:each="regra : ${doc.regras}" th:classappend="${regra.aprovada} ? 'ok' : 'falha'">
+                <span class="check-icone" th:text="${regra.aprovada} ? '✓' : '✗'"></span>
+                <div>
+                    <strong th:text="${regra.nome}"></strong>
+                    <small th:text="${regra.motivo}"></small>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Dados estruturados pela IA -->
+    <section th:if="${doc.status != null and doc.textoOcr != null and !doc.textoOcr.isBlank()}" class="resultado">
+        <h2>Dados extraídos (IA)</h2>
+        <table class="dados">
+            <tr><th>Nome</th><td th:text="${doc.nome ?: '—'}"></td></tr>
+            <tr><th>CPF</th><td th:text="${doc.cpf ?: '—'}"></td></tr>
+            <tr><th>Endereço</th><td th:text="${doc.endereco ?: '—'}"></td></tr>
+            <tr><th>CEP</th><td th:text="${doc.cep ?: '—'}"></td></tr>
+            <tr><th>Cidade</th><td th:text="${doc.cidade ?: '—'}"></td></tr>
+            <tr><th>Estado</th><td th:text="${doc.estado ?: '—'}"></td></tr>
+            <tr><th>Data de emissão</th>
+                <td th:text="${doc.dataEmissao != null} ? ${#temporals.format(doc.dataEmissao, 'dd/MM/yyyy')} : '—'"></td></tr>
+        </table>
+    </section>
+
+    <!-- Texto bruto do OCR -->
+    <section class="resultado">
+        <h2>Texto extraído (OCR)</h2>
+        <pre th:text="${doc.textoOcr != null and !doc.textoOcr.isBlank()} ? ${doc.textoOcr} : '(nenhum texto reconhecido)'"></pre>
+    </section>
+
+    <div class="acoes">
+        <a class="botao" th:href="@{/}">Enviar outro documento</a>
+        <a class="botao botao-secundario" th:href="@{/documentos}">Ver histórico</a>
+    </div>
+</main>
+</body>
+</html>
