@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultado da validação</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<head th:replace="~{fragmentos :: cabeca('Resultado')}"></head>
 <body>
-<main class="card">
-    <header th:replace="~{fragmentos :: topo('')}"></header>
+<header th:replace="~{fragmentos :: barra('')}"></header>
 
-    <h1>Resultado da validação</h1>
-    <p class="meta">
+<main class="pagina estreita">
+    <h1 class="surgir">Resultado da validação</h1>
+    <p class="meta surgir" style="--ordem: 1">
         <span th:text="${doc.nomeArquivoOriginal}">arquivo.png</span> ·
         Comprovante de residência ·
         enviado em <span th:text="${#temporals.format(doc.criadoEm, 'dd/MM/yyyy HH:mm')}">24/11/2026 19:42</span>
@@ -19,6 +14,7 @@
 
     <div th:replace="~{fragmentos :: alertas}"></div>
 
+    <section class="painel surgir" style="--ordem: 2">
     <!-- Selo: APROVADO / REPROVADO, ou "não validado" quando a IA falhou -->
     <div th:if="${doc.status != null}" class="selo"
          th:classappend="${doc.status.name() == 'APROVADO'} ? 'selo-aprovado' : 'selo-reprovado'">
@@ -65,11 +61,14 @@
         <h2>Texto extraído (OCR)</h2>
         <pre th:text="${doc.textoOcr != null and !doc.textoOcr.isBlank()} ? ${doc.textoOcr} : '(nenhum texto reconhecido)'"></pre>
     </section>
+    </section>
 
-    <div class="acoes">
+    <div class="acoes surgir" style="--ordem: 3">
         <a class="botao" th:href="@{/}">Enviar outro documento</a>
         <a class="botao botao-secundario" th:href="@{/documentos}">Ver histórico</a>
     </div>
 </main>
+
+<footer th:replace="~{fragmentos :: rodape}"></footer>
 </body>
 </html>

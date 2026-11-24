@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validador de Documentos</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<head th:replace="~{fragmentos :: cabeca('Enviar documento')}"></head>
 <body>
-<main class="card">
-    <header th:replace="~{fragmentos :: topo('enviar')}"></header>
+<header th:replace="~{fragmentos :: barra('enviar')}"></header>
 
-    <h1>Enviar documento</h1>
-    <p class="subtitulo">Envie o comprovante: o sistema lê o texto, extrai os dados com IA e aplica as regras de validação.</p>
+<main class="pagina estreita">
+    <h1 class="surgir">Enviar documento</h1>
+    <p class="subtitulo surgir" style="--ordem: 1">
+        Envie o comprovante: o sistema lê o texto, extrai os dados com IA e aplica as regras de validação.
+    </p>
 
     <div th:replace="~{fragmentos :: alertas}"></div>
 
-    <!-- enctype multipart/form-data é OBRIGATÓRIO para enviar arquivos -->
-    <form th:action="@{/documentos}" method="post" enctype="multipart/form-data">
-        <label for="tipo">Tipo de documento</label>
-        <select id="tipo" name="tipo" required>
-            <option value="COMPROVANTE_RESIDENCIA">Comprovante de residência</option>
-        </select>
+    <section class="painel surgir" style="--ordem: 2">
+        <!-- enctype multipart/form-data é OBRIGATÓRIO para enviar arquivos -->
+        <form th:action="@{/documentos}" method="post" enctype="multipart/form-data">
+            <label for="tipo">Tipo de documento</label>
+            <select id="tipo" name="tipo" required>
+                <option value="COMPROVANTE_RESIDENCIA">Comprovante de residência</option>
+            </select>
 
-        <label for="arquivo">Arquivo (PDF, PNG ou JPG — máx. 10MB)</label>
-        <input type="file" id="arquivo" name="arquivo" accept=".pdf,.png,.jpg,.jpeg" required>
+            <label for="arquivo">Arquivo (PDF, PNG ou JPG — máx. 10MB)</label>
+            <input type="file" id="arquivo" name="arquivo" accept=".pdf,.png,.jpg,.jpeg" required>
 
-        <button type="submit">Processar documento</button>
-    </form>
+            <button type="submit">Processar documento</button>
+        </form>
+    </section>
 </main>
+
+<footer th:replace="~{fragmentos :: rodape}"></footer>
 </body>
 </html>

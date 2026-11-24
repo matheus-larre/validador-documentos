@@ -1,52 +1,51 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Histórico de documentos</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<head th:replace="~{fragmentos :: cabeca('Histórico')}"></head>
 <body>
-<main class="card larga">
-    <header th:replace="~{fragmentos :: topo('historico')}"></header>
+<header th:replace="~{fragmentos :: barra('historico')}"></header>
 
-    <h1>Histórico</h1>
-    <p class="subtitulo">Documentos processados, do mais recente para o mais antigo.</p>
+<main class="pagina">
+    <h1 class="surgir">Histórico</h1>
+    <p class="subtitulo surgir" style="--ordem: 1">Documentos processados, do mais recente para o mais antigo.</p>
 
     <div th:replace="~{fragmentos :: alertas}"></div>
 
-    <p th:if="${documentos.isEmpty()}" class="vazio">
-        Nenhum documento processado ainda. <a th:href="@{/}">Envie o primeiro</a>.
-    </p>
+    <section class="painel surgir" style="--ordem: 2">
+        <p th:if="${documentos.isEmpty()}" class="vazio">
+            Nenhum documento processado ainda. <a th:href="@{/}">Envie o primeiro</a>.
+        </p>
 
-    <!-- A rolagem horizontal fica só na tabela, nunca na página inteira (celular) -->
-    <div th:if="${!documentos.isEmpty()}" class="tabela-rolagem">
-        <table class="historico">
-            <thead>
-            <tr>
-                <th>Data</th>
-                <th>Arquivo</th>
-                <th>Titular</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="doc : ${documentos}">
-                <td th:text="${#temporals.format(doc.criadoEm, 'dd/MM/yyyy HH:mm')}"></td>
-                <td class="quebra" th:text="${doc.nomeArquivoOriginal}"></td>
-                <td th:text="${doc.nome ?: '—'}"></td>
-                <td>
-                    <span th:if="${doc.status != null}" class="chip"
-                          th:classappend="${doc.status.name() == 'APROVADO'} ? 'chip-aprovado' : 'chip-reprovado'"
-                          th:text="${doc.status}"></span>
-                    <span th:if="${doc.status == null}" class="chip chip-neutro">NÃO VALIDADO</span>
-                </td>
-                <td><a th:href="@{/documentos/{id}(id=${doc.id})}">Ver detalhes</a></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+        <!-- A rolagem horizontal fica só na tabela, nunca na página inteira (celular) -->
+        <div th:if="${!documentos.isEmpty()}" class="tabela-rolagem">
+            <table class="historico">
+                <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Arquivo</th>
+                    <th>Titular</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="doc : ${documentos}">
+                    <td th:text="${#temporals.format(doc.criadoEm, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td class="quebra" th:text="${doc.nomeArquivoOriginal}"></td>
+                    <td th:text="${doc.nome ?: '—'}"></td>
+                    <td>
+                        <span th:if="${doc.status != null}" class="chip"
+                              th:classappend="${doc.status.name() == 'APROVADO'} ? 'chip-aprovado' : 'chip-reprovado'"
+                              th:text="${doc.status}"></span>
+                        <span th:if="${doc.status == null}" class="chip chip-neutro">NÃO VALIDADO</span>
+                    </td>
+                    <td><a th:href="@{/documentos/{id}(id=${doc.id})}">Ver detalhes</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </main>
+
+<footer th:replace="~{fragmentos :: rodape}"></footer>
 </body>
 </html>

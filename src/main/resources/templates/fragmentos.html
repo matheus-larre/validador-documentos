@@ -1,14 +1,39 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Cabeçalho HTML comum a todas as telas (título da aba, fonte, CSS e ícone) -->
+<head th:fragment="cabeca(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo} + ' · Validador de Documentos'">Validador de Documentos</title>
+    <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
 <body>
 
-<!-- Topo compartilhado por todas as telas: marca + menu. "ativo" destaca a página atual. -->
-<header th:fragment="topo(ativo)" class="topo">
-    <p class="marca">Validador Inteligente de Documentos</p>
-    <nav class="menu" aria-label="Menu principal">
-        <a th:href="@{/}" th:classappend="${ativo == 'enviar'} ? 'ativo'">Enviar documento</a>
-        <a th:href="@{/documentos}" th:classappend="${ativo == 'historico'} ? 'ativo'">Histórico</a>
-    </nav>
+<!-- Barra superior compartilhada: marca + menu. "ativo" destaca a página atual. -->
+<header th:fragment="barra(ativo)" class="barra">
+    <div class="barra-conteudo">
+        <a class="logo" th:href="@{/}">
+            <span class="logo-icone" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                    <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                    <path d="m9 15 2 2 4-4"/>
+                </svg>
+            </span>
+            <span>Validador<small>Inteligente de Documentos</small></span>
+        </a>
+        <nav class="menu" aria-label="Menu principal">
+            <a th:href="@{/}" th:classappend="${ativo == 'enviar'} ? 'ativo'">Enviar documento</a>
+            <a th:href="@{/documentos}" th:classappend="${ativo == 'historico'} ? 'ativo'">Histórico</a>
+        </nav>
+    </div>
 </header>
 
 <!-- Mensagens de sucesso/erro vindas do Controller (flash attributes) -->
@@ -16,6 +41,11 @@
     <div th:if="${sucesso}" class="alerta sucesso" th:text="${sucesso}"></div>
     <div th:if="${erro}" class="alerta erro" th:text="${erro}"></div>
 </div>
+
+<!-- Rodapé compartilhado -->
+<footer th:fragment="rodape" class="rodape">
+    <p>Residência Tecnológica 2026.2 · Porto Digital · CESAR School · Mentoria Avanade</p>
+</footer>
 
 </body>
 </html>
