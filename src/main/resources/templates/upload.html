@@ -5,29 +5,88 @@
 <header th:replace="~{fragmentos :: barra('enviar')}"></header>
 
 <main class="pagina estreita">
-    <h1 class="surgir">Enviar documento</h1>
+    <h1 class="surgir">Validação de comprovantes <span class="destaque">em segundos</span></h1>
     <p class="subtitulo surgir" style="--ordem: 1">
-        Envie o comprovante: o sistema lê o texto, extrai os dados com IA e aplica as regras de validação.
+        Envie o comprovante de residência: o sistema lê o documento, extrai os dados com IA
+        e confere as regras de validação automaticamente.
     </p>
 
     <div th:replace="~{fragmentos :: alertas}"></div>
 
+    <!-- A ferramenta vem logo abaixo do título -->
     <section class="painel surgir" style="--ordem: 2">
         <!-- enctype multipart/form-data é OBRIGATÓRIO para enviar arquivos -->
-        <form th:action="@{/documentos}" method="post" enctype="multipart/form-data">
+        <form id="form-envio" th:action="@{/documentos}" method="post" enctype="multipart/form-data">
             <label for="tipo">Tipo de documento</label>
             <select id="tipo" name="tipo" required>
                 <option value="COMPROVANTE_RESIDENCIA">Comprovante de residência</option>
             </select>
 
-            <label for="arquivo">Arquivo (PDF, PNG ou JPG — máx. 10MB)</label>
-            <input type="file" id="arquivo" name="arquivo" accept=".pdf,.png,.jpg,.jpeg" required>
+            <label for="arquivo">Arquivo</label>
+            <!-- O input de arquivo fica invisível POR CIMA da área: clicar abre o seletor
+                 e soltar um arquivo nela funciona nativamente no navegador -->
+            <div class="area-upload" id="area-upload">
+                <input type="file" id="arquivo" name="arquivo" accept=".pdf,.png,.jpg,.jpeg" required
+                       aria-describedby="upload-dica">
+                <span class="area-upload-icone" aria-hidden="true">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" x2="12" y1="3" y2="15"/>
+                    </svg>
+                </span>
+                <strong id="upload-titulo">Arraste o arquivo aqui ou clique para escolher</strong>
+                <small id="upload-dica">PDF, PNG ou JPG · até 10MB</small>
+            </div>
+            <p class="aviso-arquivo" id="aviso-arquivo" role="alert" hidden></p>
 
-            <button type="submit">Processar documento</button>
+            <button type="submit" id="botao-enviar">
+                <span class="spinner" aria-hidden="true"></span>
+                <span id="botao-texto">Processar documento</span>
+            </button>
         </form>
+    </section>
+
+    <!-- Como funciona: versão curta, embaixo da ferramenta -->
+    <section class="etapas surgir" style="--ordem: 3" aria-label="Como funciona">
+        <div class="etapa">
+            <span class="etapa-icone" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+                    <path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+                    <path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/>
+                </svg>
+            </span>
+            <h3><span class="etapa-numero">1</span> Leitura</h3>
+            <p>O OCR (Tesseract) transforma a imagem ou o PDF em texto.</p>
+        </div>
+        <div class="etapa">
+            <span class="etapa-icone" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+                </svg>
+            </span>
+            <h3><span class="etapa-numero">2</span> Interpretação</h3>
+            <p>A IA (Gemini) encontra nome, CPF, endereço e data de emissão.</p>
+        </div>
+        <div class="etapa">
+            <span class="etapa-icone" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                </svg>
+            </span>
+            <h3><span class="etapa-numero">3</span> Validação</h3>
+            <p>As regras de negócio decidem: aprovado ou reprovado, com o motivo.</p>
+        </div>
     </section>
 </main>
 
 <footer th:replace="~{fragmentos :: rodape}"></footer>
+<script th:src="@{/js/upload.js}" defer></script>
 </body>
 </html>

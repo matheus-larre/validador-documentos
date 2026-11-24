@@ -180,6 +180,99 @@ button:focus-visible, .botao:focus-visible, .menu a:focus-visible {
 .acoes { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
 .acoes .botao { flex: 1 1 200px; }
 
+/* ===== Título com destaque pastel (sublinhado grosso, como na referência) ===== */
+.destaque {
+    background: linear-gradient(transparent 62%, var(--lilas) 62%, var(--lilas) 92%, transparent 92%);
+    padding: 0 2px;
+    white-space: nowrap; /* "em segundos" não se separa em duas linhas */
+}
+
+/* ===== Área de arrastar e soltar ===== */
+.area-upload {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 168px;
+    padding: 24px 16px;
+    text-align: center;
+    border: 2px dashed var(--lavanda);
+    border-radius: var(--raio);
+    background: #F8F7FF;
+    transition: background .2s ease, border-color .2s ease;
+}
+.area-upload strong { font-size: 15px; overflow-wrap: anywhere; }
+.area-upload small { color: var(--texto-suave); font-size: 13px; }
+.area-upload-icone {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 4px;
+    border-radius: 14px;
+    background: var(--branco);
+    border: 1px solid var(--cinza-azulado);
+}
+/* O input fica invisível cobrindo toda a área: recebe o clique e o arquivo solto */
+.area-upload input[type=file] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+.area-upload:hover, .area-upload.arrastando { background: #F0EDFF; border-color: var(--lilas); }
+.area-upload:focus-within { box-shadow: 0 0 0 3px rgba(184, 192, 255, 0.55); }
+.area-upload.com-arquivo { border-style: solid; border-color: var(--verde-borda); background: #F4FBF7; }
+.area-upload.com-arquivo .area-upload-icone { color: var(--verde-texto); }
+
+.aviso-arquivo { margin: 10px 0 0; color: var(--vermelho-texto); font-size: 14px; font-weight: 600; }
+
+/* ===== Botão em processamento ===== */
+.spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: var(--branco);
+    border-radius: 50%;
+    animation: girar .8s linear infinite;
+}
+button.processando { cursor: progress; opacity: .92; transform: none; box-shadow: none; }
+button.processando .spinner { display: inline-block; }
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* ===== Etapas (como funciona, versão curta) ===== */
+.etapas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-top: 48px;
+}
+.etapa h3 { display: flex; align-items: center; gap: 8px; margin: 14px 0 6px; font-size: 16px; font-weight: 700; }
+.etapa p { margin: 0; color: var(--texto-suave); font-size: 14px; }
+.etapa-icone {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--texto);
+}
+.etapa-numero {
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--azul-pastel);
+    font-size: 12px;
+    font-weight: 800;
+}
+
 /* ===== Mensagens ===== */
 .alerta { padding: 12px 14px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid; font-size: 14px; }
 .sucesso { background: var(--verde-fundo); color: var(--verde-texto); border-left-color: var(--verde-borda); }
@@ -314,4 +407,5 @@ button:focus-visible, .botao:focus-visible, .menu a:focus-visible {
     .logo small { display: none; }
     .menu a { padding: 7px 12px; font-size: 13px; }
     .selo { font-size: 22px; }
+    .etapas { grid-template-columns: 1fr; gap: 22px; margin-top: 36px; }
 }
