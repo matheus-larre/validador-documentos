@@ -333,6 +333,70 @@ button.processando .spinner { display: inline-block; }
 .checklist li.ok .check-icone { color: var(--verde-texto); }
 .checklist li.falha .check-icone { color: var(--vermelho-texto); }
 
+/* ===== Tela de resultado em duas colunas ===== */
+.resultado-grade {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+.coluna-lateral { display: grid; gap: 20px; }
+.coluna-lateral .painel + .painel { margin-top: 0; }
+
+.selo-svg { width: 32px; height: 32px; flex-shrink: 0; }
+
+.resumo-regras { margin: 0 0 18px; }
+.resumo-regras p { margin: 0 0 8px; font-size: 14px; color: var(--texto-suave); }
+.resumo-regras strong { color: var(--texto); }
+.progresso { height: 8px; border-radius: 999px; background: var(--vermelho-fundo); overflow: hidden; }
+.progresso span { display: block; height: 100%; border-radius: 999px; background: var(--vermelho-borda); }
+.progresso span.completo { background: var(--verde-borda); }
+
+/* Ícone redondo do checklist */
+.checklist .check-icone {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    margin-top: 1px;
+    border-radius: 50%;
+}
+.checklist .check-icone svg { width: 13px; height: 13px; }
+.checklist li.ok .check-icone { background: var(--verde-fundo); color: var(--verde-texto); }
+.checklist li.falha .check-icone { background: var(--vermelho-fundo); color: var(--vermelho-texto); }
+
+/* Bloco recolhível (texto do OCR) */
+.recolhivel summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 18px;
+    font-weight: 700;
+}
+.recolhivel summary::-webkit-details-marker { display: none; }
+.recolhivel summary .seta { transition: transform .2s ease; color: var(--texto-suave); }
+.recolhivel[open] summary .seta { transform: rotate(180deg); }
+.recolhivel[open] summary { margin-bottom: 12px; }
+.recolhivel summary:focus-visible { outline: 3px solid var(--lavanda); outline-offset: 4px; border-radius: 6px; }
+
+/* Texto só para leitores de tela */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+    .resultado-grade { grid-template-columns: 1fr; }
+}
+
 /* ===== Tabela de dados extraídos pela IA ===== */
 .dados { width: 100%; border-collapse: collapse; font-size: 14px; }
 .dados th {

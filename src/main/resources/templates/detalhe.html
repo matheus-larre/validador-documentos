@@ -4,7 +4,7 @@
 <body>
 <header th:replace="~{fragmentos :: barra('')}"></header>
 
-<main class="pagina estreita">
+<main class="pagina">
     <h1 class="surgir">Resultado da validação</h1>
     <p class="meta surgir" style="--ordem: 1">
         <span th:text="${doc.nomeArquivoOriginal}">arquivo.png</span> ·
@@ -14,56 +14,96 @@
 
     <div th:replace="~{fragmentos :: alertas}"></div>
 
-    <section class="painel surgir" style="--ordem: 2">
-    <!-- Selo: APROVADO / REPROVADO, ou "não validado" quando a IA falhou -->
-    <div th:if="${doc.status != null}" class="selo"
-         th:classappend="${doc.status.name() == 'APROVADO'} ? 'selo-aprovado' : 'selo-reprovado'">
-        <span class="selo-icone" th:text="${doc.status.name() == 'APROVADO'} ? '✓' : '✗'"></span>
-        <span th:text="${doc.status}">APROVADO</span>
-    </div>
-    <div th:if="${doc.status == null}">
-        <div class="selo selo-neutro"><span>NÃO VALIDADO</span></div>
-        <div class="alerta erro"
-             th:text="'A IA não conseguiu extrair os dados: ' + ${doc.erroProcessamento} + ' Envie o documento novamente.'"></div>
-    </div>
+    <!-- Duas colunas no computador (decisão à esquerda, dados à direita); empilha no celular -->
+    <div class="resultado-grade">
 
-    <!-- Checklist das regras -->
-    <section th:if="${!doc.regras.isEmpty()}" class="resultado">
-        <h2>Regras de validação</h2>
-        <ul class="checklist">
-            <li th:each="regra : ${doc.regras}" th:classappend="${regra.aprovada} ? 'ok' : 'falha'">
-                <span class="check-icone" th:text="${regra.aprovada} ? '✓' : '✗'"></span>
-                <div>
-                    <strong th:text="${regra.nome}"></strong>
-                    <small th:text="${regra.motivo}"></small>
+        <!-- ===== Coluna 1: decisão ===== -->
+        <section class="painel surgir" style="--ordem: 2"
+                 th:with="total=${#lists.size(doc.regras)}, atendidas=${#lists.size(doc.regras.?[aprovada])}">
+
+            <!-- Selo: APROVADO / REPROVADO -->
+            <div th:if="${doc.status != null}" class="selo"
+                 th:classappend="${doc.status.name() == 'APROVADO'} ? 'selo-aprovado' : 'selo-reprovado'">
+                <svg th:if="${doc.status.name() == 'APROVADO'}" class="selo-svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+                </svg>
+                <svg th:if="${doc.status.name() != 'APROVADO'}" class="selo-svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+                </svg>
+                <span th:text="${doc.status}">APROVADO</span>
+            </div>
+
+            <!-- Quando a IA falhou: não há decisão, só o aviso -->
+            <div th:if="${doc.status == null}">
+                <div class="selo selo-neutro"><span>NÃO VALIDADO</span></div>
+                <div class="alerta erro"
+                     th:text="'A IA não conseguiu extrair os dados: ' + ${doc.erroProcessamento} + ' Envie o documento novamente.'"></div>
+            </div>
+
+            <!-- Resumo + barra de progresso das regras -->
+            <div th:if="${total > 0}" class="resumo-regras">
+                <p><strong th:text="${atendidas} + ' de ' + ${total}">6 de 7</strong> regras atendidas</p>
+                <div class="progresso" role="presentation">
+                    <span th:style="'width:' + ${atendidas * 100 / total} + '%'"
+                          th:classappend="${atendidas == total} ? 'completo'"></span>
                 </div>
-            </li>
-        </ul>
-    </section>
+            </div>
 
-    <!-- Dados estruturados pela IA -->
-    <section th:if="${doc.status != null and doc.textoOcr != null and !doc.textoOcr.isBlank()}" class="resultado">
-        <h2>Dados extraídos (IA)</h2>
-        <table class="dados">
-            <tr><th>Nome</th><td th:text="${doc.nome ?: '—'}"></td></tr>
-            <tr><th>CPF</th><td th:text="${doc.cpf ?: '—'}"></td></tr>
-            <tr><th>Endereço</th><td th:text="${doc.endereco ?: '—'}"></td></tr>
-            <tr><th>CEP</th><td th:text="${doc.cep ?: '—'}"></td></tr>
-            <tr><th>Cidade</th><td th:text="${doc.cidade ?: '—'}"></td></tr>
-            <tr><th>Estado</th><td th:text="${doc.estado ?: '—'}"></td></tr>
-            <tr><th>Data de emissão</th>
-                <td th:text="${doc.dataEmissao != null} ? ${#temporals.format(doc.dataEmissao, 'dd/MM/yyyy')} : '—'"></td></tr>
-        </table>
-    </section>
+            <!-- Checklist das regras -->
+            <ul th:if="${total > 0}" class="checklist">
+                <li th:each="regra : ${doc.regras}" th:classappend="${regra.aprovada} ? 'ok' : 'falha'">
+                    <span class="check-icone" aria-hidden="true">
+                        <svg th:if="${regra.aprovada}" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                        <svg th:unless="${regra.aprovada}" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </span>
+                    <div>
+                        <strong th:text="${regra.nome}"></strong>
+                        <small th:text="${regra.motivo}"></small>
+                    </div>
+                    <span class="sr-only" th:text="${regra.aprovada} ? 'atendida' : 'não atendida'"></span>
+                </li>
+            </ul>
+        </section>
 
-    <!-- Texto bruto do OCR -->
-    <section class="resultado">
-        <h2>Texto extraído (OCR)</h2>
-        <pre th:text="${doc.textoOcr != null and !doc.textoOcr.isBlank()} ? ${doc.textoOcr} : '(nenhum texto reconhecido)'"></pre>
-    </section>
-    </section>
+        <!-- ===== Coluna 2: dados ===== -->
+        <div class="coluna-lateral">
+            <!-- Dados estruturados pela IA -->
+            <section th:if="${doc.status != null and doc.textoOcr != null and !doc.textoOcr.isBlank()}"
+                     class="painel surgir" style="--ordem: 3">
+                <h2>Dados extraídos (IA)</h2>
+                <table class="dados">
+                    <tr><th>Nome</th><td th:text="${doc.nome ?: '—'}"></td></tr>
+                    <tr><th>CPF</th><td th:text="${doc.cpf ?: '—'}"></td></tr>
+                    <tr><th>Endereço</th><td th:text="${doc.endereco ?: '—'}"></td></tr>
+                    <tr><th>CEP</th><td th:text="${doc.cep ?: '—'}"></td></tr>
+                    <tr><th>Cidade</th><td th:text="${doc.cidade ?: '—'}"></td></tr>
+                    <tr><th>Estado</th><td th:text="${doc.estado ?: '—'}"></td></tr>
+                    <tr><th>Data de emissão</th>
+                        <td th:text="${doc.dataEmissao != null} ? ${#temporals.format(doc.dataEmissao, 'dd/MM/yyyy')} : '—'"></td></tr>
+                </table>
+            </section>
 
-    <div class="acoes surgir" style="--ordem: 3">
+            <!-- Texto bruto do OCR: recolhido por padrão (informação técnica) -->
+            <section class="painel surgir" style="--ordem: 4">
+                <details class="recolhivel">
+                    <summary>
+                        <span>Texto extraído (OCR)</span>
+                        <svg class="seta" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="m6 9 6 6 6-6"/>
+                        </svg>
+                    </summary>
+                    <pre th:text="${doc.textoOcr != null and !doc.textoOcr.isBlank()} ? ${doc.textoOcr} : '(nenhum texto reconhecido)'"></pre>
+                </details>
+            </section>
+        </div>
+    </div>
+
+    <div class="acoes surgir" style="--ordem: 5">
         <a class="botao" th:href="@{/}">Enviar outro documento</a>
         <a class="botao botao-secundario" th:href="@{/documentos}">Ver histórico</a>
     </div>
