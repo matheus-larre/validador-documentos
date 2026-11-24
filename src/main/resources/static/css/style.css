@@ -132,6 +132,44 @@ button:active { transform: translateY(0); }
     color: var(--texto);
 }
 
+/* ===== Selo APROVADO / REPROVADO (verde e vermelho suavizados, como nos alertas) ===== */
+.selo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+    border-radius: 14px;
+    border: 2px solid;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+.selo-icone { font-size: 30px; }
+.selo-aprovado { background: #E8F6EE; color: #1E6B3A; border-color: #8FD3A8; }
+.selo-reprovado { background: #FDEDEF; color: #A12A3A; border-color: #F2A7B3; }
+
+/* ===== Checklist das regras ===== */
+.checklist { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.checklist li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--fundo);
+    border: 1px solid var(--cinza-azulado);
+    border-left: 4px solid;
+}
+.checklist li.ok { border-left-color: #8FD3A8; }
+.checklist li.falha { border-left-color: #F2A7B3; background: #FDF5F6; }
+.checklist strong { display: block; font-size: 14px; }
+.checklist small { display: block; color: var(--texto-suave); font-size: 13px; margin-top: 2px; overflow-wrap: anywhere; }
+.check-icone { font-weight: 800; font-size: 16px; line-height: 1.2; min-width: 16px; }
+.checklist li.ok .check-icone { color: #1E6B3A; }
+.checklist li.falha .check-icone { color: #A12A3A; }
+
 /* ===== Tabela de dados extraídos pela IA ===== */
 .dados { width: 100%; border-collapse: collapse; font-size: 14px; }
 .dados th {

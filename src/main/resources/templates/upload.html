@@ -29,6 +29,25 @@
         <button type="submit">Processar documento</button>
     </form>
 
+    <!-- Resultado da validação: selo + checklist de regras -->
+    <section th:if="${resultado}" class="resultado">
+        <div class="selo" th:classappend="${resultado.aprovado()} ? 'selo-aprovado' : 'selo-reprovado'">
+            <span class="selo-icone" th:text="${resultado.aprovado()} ? '✓' : '✗'"></span>
+            <span th:text="${resultado.status()}">APROVADO</span>
+        </div>
+
+        <h2>Regras de validação</h2>
+        <ul class="checklist">
+            <li th:each="regra : ${resultado.regras()}" th:classappend="${regra.aprovada()} ? 'ok' : 'falha'">
+                <span class="check-icone" th:text="${regra.aprovada()} ? '✓' : '✗'"></span>
+                <div>
+                    <strong th:text="${regra.nome()}"></strong>
+                    <small th:text="${regra.motivo()}"></small>
+                </div>
+            </li>
+        </ul>
+    </section>
+
     <!-- Dados estruturados pela IA: só aparece quando a extração deu certo -->
     <section th:if="${dados}" class="resultado">
         <h2>Dados extraídos (IA)</h2>
