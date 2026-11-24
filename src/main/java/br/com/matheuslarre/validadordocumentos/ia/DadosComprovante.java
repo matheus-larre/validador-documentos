@@ -2,7 +2,6 @@ package br.com.matheuslarre.validadordocumentos.ia;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
@@ -19,5 +18,5 @@ public record DadosComprovante(
         String cidade,
         String estado,
         LocalDate dataEmissao
-) implements Serializable {
+) implements DadosExtraidos {
 }

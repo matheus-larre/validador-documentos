@@ -1,6 +1,7 @@
 package br.com.matheuslarre.validadordocumentos.validacao;
 
 import br.com.matheuslarre.validadordocumentos.ia.DadosComprovante;
+import br.com.matheuslarre.validadordocumentos.ia.DadosIdentificacao;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -12,7 +13,7 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * Regras de negócio do comprovante de residência.
+ * Regras de negócio de cada tipo de documento (comprovante de residência e RG/CNH).
  * Cada regra devolve um RegraResultado; o documento só é aprovado se todas passarem.
  */
 @Service
@@ -20,6 +21,8 @@ public class ValidacaoService {
 
     static final int MIN_CARACTERES_LEGIVEL = 30;
     static final int MAX_DIAS_EMISSAO = 90;
+    static final int IDADE_MINIMA = 18;
+    static final int IDADE_MAXIMA_PLAUSIVEL = 130;
 
     private static final Set<String> UFS = Set.of(
             "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA",
@@ -48,6 +51,24 @@ public class ValidacaoService {
                 cepValido(d.cep()),
                 estadoValido(d.estado()),
                 emissaoRecente(d.dataEmissao())
+        ));
+    }
+
+    /**
+     * Regras do documento de identificação (RG, CIN ou CNH).
+     * Reaproveita as regras comuns (legível, nome, CPF) e acrescenta as específicas.
+     * @param dados dados extraídos pela IA (pode ser null se o documento estava ilegível)
+     */
+    public ResultadoValidacao validarIdentificacao(String textoOcr, DadosIdentificacao dados) {
+        DadosIdentificacao d = dados != null ? dados : new DadosIdentificacao(null, null, null, null, null, null);
+        return ResultadoValidacao.de(List.of(
+                documentoLegivel(textoOcr),
+                nomeIdentificado(d.nome()),
+                cpfValido(d.cpf()),
+                numeroDocumentoIdentificado(d.numeroDocumento()),
+                dataNascimentoValida(d.dataNascimento()),
+                maiorDeIdade(d.dataNascimento()),
+                dentroDaValidade(d)
         ));
     }
 
@@ -120,6 +141,60 @@ public class ValidacaoService {
                 ? RegraResultado.ok(regra, "Emitido em " + dataEmissao.format(DATA_BR) + " (há " + dias + " dias)")
                 : RegraResultado.falha(regra, "Emitido em " + dataEmissao.format(DATA_BR) + ", há " + dias
                         + " dias (limite: " + MAX_DIAS_EMISSAO + ")");
+    }
+
+    // ===== Regras do documento de identificação =====
+
+    RegraResultado numeroDocumentoIdentificado(String numero) {
+        String regra = "Número do documento identificado";
+        return temTexto(numero)
+                ? RegraResultado.ok(regra, numero.strip())
+                : RegraResultado.falha(regra, "Número do RG ou registro da CNH não encontrado");
+    }
+
+    RegraResultado dataNascimentoValida(LocalDate nascimento) {
+        String regra = "Data de nascimento válida";
+        if (nascimento == null) {
+            return RegraResultado.falha(regra, "Data de nascimento não encontrada no documento");
+        }
+        LocalDate hoje = LocalDate.now(clock);
+        if (nascimento.isAfter(hoje)) {
+            return RegraResultado.falha(regra, "Data de nascimento " + nascimento.format(DATA_BR) + " está no futuro");
+        }
+        if (ChronoUnit.YEARS.between(nascimento, hoje) > IDADE_MAXIMA_PLAUSIVEL) {
+            return RegraResultado.falha(regra, "Data de nascimento " + nascimento.format(DATA_BR) + " não é plausível");
+        }
+        return RegraResultado.ok(regra, nascimento.format(DATA_BR));
+    }
+
+    /** Cadastro de cliente: o titular precisa ter 18 anos completos. */
+    RegraResultado maiorDeIdade(LocalDate nascimento) {
+        String regra = "Titular maior de idade";
+        if (nascimento == null) {
+            return RegraResultado.falha(regra, "Sem data de nascimento, não é possível calcular a idade");
+        }
+        long idade = ChronoUnit.YEARS.between(nascimento, LocalDate.now(clock));
+        return idade >= IDADE_MINIMA
+                ? RegraResultado.ok(regra, idade + " anos")
+                : RegraResultado.falha(regra, "Titular tem " + Math.max(idade, 0) + " anos (mínimo: " + IDADE_MINIMA + ")");
+    }
+
+    /**
+     * CNH tem validade: precisa estar presente e não vencida.
+     * RG normalmente não tem validade: passa, com o motivo explicado.
+     */
+    RegraResultado dentroDaValidade(DadosIdentificacao dados) {
+        String regra = "Documento dentro da validade";
+        LocalDate validade = dados.dataValidade();
+        if (validade == null) {
+            return dados.ehCnh()
+                    ? RegraResultado.falha(regra, "Validade da CNH não encontrada no documento")
+                    : RegraResultado.ok(regra, "Documento sem data de validade (RG)");
+        }
+        LocalDate hoje = LocalDate.now(clock);
+        return validade.isBefore(hoje)
+                ? RegraResultado.falha(regra, "Documento vencido em " + validade.format(DATA_BR))
+                : RegraResultado.ok(regra, "Válido até " + validade.format(DATA_BR));
     }
 
     // ===== Algoritmo do CPF (módulo 11) =====
