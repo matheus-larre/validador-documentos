@@ -1,0 +1,11 @@
+# O que NÃO entra no contexto do build do Docker
+# .env tem a chave do Gemini: nunca pode ir para dentro da imagem
+.env
+.git/
+target/
+uploads/
+.vscode/
+.idea/
+.github/
+HELP.md
+*.log
