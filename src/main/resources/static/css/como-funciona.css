@@ -151,3 +151,6 @@
 @media (max-width: 560px) {
     .cf-problema-solucao { grid-template-columns: 1fr; }
 }
+/* Grupos de regras (um por tipo de documento) */
+.cf-grupo-titulo { margin: 28px 0 12px; font-size: 17px; font-weight: 700; }
+.cf-grupo-titulo:first-of-type { margin-top: 0; }

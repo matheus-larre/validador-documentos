@@ -22,7 +22,7 @@
                     </svg>
                 </span>
                 <h2>O problema</h2>
-                <p>Conferir comprovantes à mão no cadastro é lento, sujeito a erro e gera retrabalho
+                <p>Conferir documentos à mão no cadastro é lento, sujeito a erro e gera retrabalho
                     para a equipe de backoffice.</p>
             </div>
             <div class="surgir" style="--ordem: 2">
@@ -95,7 +95,7 @@
             <div class="painel revelar" style="--ordem: 0">
                 <span class="cf-passo-numero">1</span>
                 <h3>Envie o arquivo</h3>
-                <p>Em <a th:href="@{/}">Enviar documento</a>, escolha o tipo e arraste o comprovante (PDF, PNG ou JPG, até 10MB).</p>
+                <p>Em <a th:href="@{/}">Enviar documento</a>, escolha o tipo (comprovante de residência ou RG/CNH) e arraste o arquivo (PDF, PNG ou JPG, até 10MB).</p>
             </div>
             <div class="painel revelar" style="--ordem: 1">
                 <span class="cf-passo-numero">2</span>
@@ -113,7 +113,9 @@
     <!-- ===== 4. Regras ===== -->
     <section class="cf-secao">
         <h2 class="cf-secao-titulo revelar">Regras de validação</h2>
-        <p class="cf-secao-sub revelar">O documento só é <strong>aprovado</strong> se todas as regras forem atendidas.</p>
+        <p class="cf-secao-sub revelar">Cada tipo de documento tem as suas regras. Ele só é <strong>aprovado</strong> se todas forem atendidas.</p>
+
+        <h3 class="cf-grupo-titulo revelar">Comprovante de residência</h3>
         <ul class="cf-regras">
             <li class="revelar" style="--ordem: 0"><strong>Documento legível</strong><span>O OCR reconhece texto suficiente no arquivo.</span></li>
             <li class="revelar" style="--ordem: 1"><strong>Nome identificado</strong><span>O titular do comprovante foi encontrado.</span></li>
@@ -122,6 +124,17 @@
             <li class="revelar" style="--ordem: 4"><strong>CEP válido</strong><span>CEP com 8 dígitos.</span></li>
             <li class="revelar" style="--ordem: 5"><strong>Estado válido</strong><span>Uma das 27 UFs brasileiras.</span></li>
             <li class="revelar" style="--ordem: 6"><strong>Emissão recente</strong><span>Emitido há no máximo 90 dias e sem data no futuro.</span></li>
+        </ul>
+
+        <h3 class="cf-grupo-titulo revelar">Documento de identificação (RG ou CNH)</h3>
+        <ul class="cf-regras">
+            <li class="revelar" style="--ordem: 0"><strong>Documento legível</strong><span>O OCR reconhece texto suficiente no arquivo.</span></li>
+            <li class="revelar" style="--ordem: 1"><strong>Nome identificado</strong><span>O nome completo do titular foi encontrado.</span></li>
+            <li class="revelar" style="--ordem: 2"><strong>CPF válido</strong><span>Mesma conferência do módulo 11.</span></li>
+            <li class="revelar" style="--ordem: 3"><strong>Número do documento</strong><span>Número do RG ou registro da CNH encontrado.</span></li>
+            <li class="revelar" style="--ordem: 4"><strong>Data de nascimento válida</strong><span>Presente, não futura e plausível.</span></li>
+            <li class="revelar" style="--ordem: 5"><strong>Titular maior de idade</strong><span>18 anos completos, por ser cadastro de cliente.</span></li>
+            <li class="revelar" style="--ordem: 6"><strong>Dentro da validade</strong><span>A CNH não pode estar vencida. O RG não tem validade.</span></li>
         </ul>
     </section>
 

@@ -21,6 +21,7 @@
                 <thead>
                 <tr>
                     <th>Data</th>
+                    <th>Tipo</th>
                     <th>Arquivo</th>
                     <th>Titular</th>
                     <th>Status</th>
@@ -30,6 +31,7 @@
                 <tbody>
                 <tr th:each="doc : ${documentos}">
                     <td th:text="${#temporals.format(doc.criadoEm, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${doc.tipo.descricao}"></td>
                     <td class="quebra" th:text="${doc.nomeArquivoOriginal}"></td>
                     <td th:text="${doc.nome ?: '—'}"></td>
                     <td>

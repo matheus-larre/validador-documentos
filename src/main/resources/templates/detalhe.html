@@ -8,7 +8,7 @@
     <h1 class="surgir">Resultado da validação</h1>
     <p class="meta surgir" style="--ordem: 1">
         <span th:text="${doc.nomeArquivoOriginal}">arquivo.png</span> ·
-        Comprovante de residência ·
+        <span th:text="${doc.tipo.descricao}">Comprovante de residência</span> ·
         enviado em <span th:text="${#temporals.format(doc.criadoEm, 'dd/MM/yyyy HH:mm')}">24/11/2026 19:42</span>
     </p>
 
@@ -75,7 +75,21 @@
             <section th:if="${doc.status != null and doc.textoOcr != null and !doc.textoOcr.isBlank()}"
                      class="painel surgir" style="--ordem: 3">
                 <h2>Dados extraídos (IA)</h2>
-                <table class="dados">
+
+                <!-- RG / CNH -->
+                <table class="dados" th:if="${doc.tipo.name() == 'DOCUMENTO_IDENTIFICACAO'}">
+                    <tr><th>Nome</th><td th:text="${doc.nome ?: '—'}"></td></tr>
+                    <tr><th>CPF</th><td th:text="${doc.cpf ?: '—'}"></td></tr>
+                    <tr><th>Documento</th><td th:text="${doc.tipoIdentificado ?: '—'}"></td></tr>
+                    <tr><th>Número</th><td th:text="${doc.numeroDocumento ?: '—'}"></td></tr>
+                    <tr><th>Data de nascimento</th>
+                        <td th:text="${doc.dataNascimento != null} ? ${#temporals.format(doc.dataNascimento, 'dd/MM/yyyy')} : '—'"></td></tr>
+                    <tr><th>Validade</th>
+                        <td th:text="${doc.dataValidade != null} ? ${#temporals.format(doc.dataValidade, 'dd/MM/yyyy')} : 'Sem data de validade'"></td></tr>
+                </table>
+
+                <!-- Comprovante de residência -->
+                <table class="dados" th:if="${doc.tipo.name() == 'COMPROVANTE_RESIDENCIA'}">
                     <tr><th>Nome</th><td th:text="${doc.nome ?: '—'}"></td></tr>
                     <tr><th>CPF</th><td th:text="${doc.cpf ?: '—'}"></td></tr>
                     <tr><th>Endereço</th><td th:text="${doc.endereco ?: '—'}"></td></tr>

@@ -5,10 +5,10 @@
 <header th:replace="~{fragmentos :: barra('enviar')}"></header>
 
 <main class="pagina estreita">
-    <h1 class="surgir">Validação de comprovantes <span class="destaque">em segundos</span></h1>
+    <h1 class="surgir">Validação de documentos <span class="destaque">em segundos</span></h1>
     <p class="subtitulo surgir" style="--ordem: 1">
-        Envie o comprovante de residência: o sistema lê o documento, extrai os dados com IA
-        e confere as regras de validação automaticamente.
+        Envie um comprovante de residência ou um documento de identificação (RG ou CNH):
+        o sistema lê o documento, extrai os dados com IA e confere as regras automaticamente.
     </p>
 
     <div th:replace="~{fragmentos :: alertas}"></div>
@@ -20,6 +20,7 @@
             <label for="tipo">Tipo de documento</label>
             <select id="tipo" name="tipo" required>
                 <option value="COMPROVANTE_RESIDENCIA">Comprovante de residência</option>
+                <option value="DOCUMENTO_IDENTIFICACAO">Documento de identificação (RG ou CNH)</option>
             </select>
 
             <label for="arquivo">Arquivo</label>
@@ -70,7 +71,7 @@
                 </svg>
             </span>
             <h3><span class="etapa-numero">2</span> Interpretação</h3>
-            <p>A IA (Gemini) encontra nome, CPF, endereço e data de emissão.</p>
+            <p>A IA (Gemini) encontra os dados: nome, CPF, endereço, datas e número do documento.</p>
         </div>
         <div class="etapa">
             <span class="etapa-icone" aria-hidden="true">
